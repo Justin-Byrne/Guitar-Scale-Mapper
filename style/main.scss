@@ -159,6 +159,18 @@ body
     }
 }
 
+#fretboard
+{
+    width: 93%;
+    // height: 20%;
+    aspect-ratio: 3 / 1;
+    margin-top: 60px;
+    margin-left: 40px;
+    position: absolute;
+    display: block;
+    // border: 2px dashed #999;
+}
+
 #ui-overlay
 {
     display: block;

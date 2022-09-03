@@ -1,6 +1,28 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.14] - 2022-09-03
+### Added
+- settings object within 'config' object, for HTML5 canvas API drawing properties
+- fretboard object to retain basic fretboard data; i.e., size(s), strings, frets, etc...
+- tone object to retain basic note and scale information; i.e., notes, tuning, scales, etc...
+- drawFretboard() to draw fretboard using HTML5 canvas API calls
+- generateOpenNotes() to generate open notes for fretboard
+- generateFretboardNotes() to generate fret notes for fretboard
+- setScale() to set scale notes, to be used through desired scale
+- getNextNote() to return the next note 
+- displayFretboardNotes() to display notes on the fretboard
+- drawRectangle() to draw a simple rectangle
+- displayText() to display text
+- UnitTests.js for unit tests
+
+### Changed
+- modified 'div#ui-overlay' to 'div#fretboard'
+- updated 'colorArray' values
+
+### Removed
+- 'Guitar Scale Mapper.sublime-project' and 'Guitar Scale Mapper.sublime-workspace'
+
 ## [1.0.0] - 2022-01-05
 ### Added
 - Directory structure
@@ -12,7 +34,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.0.0]: 2022-01-05 [CURRENT REVISION]
+[1.1.14]: 2022-09-03 [CURRENT REVISION]
 ---
 
 ## Types of changes
@@ -27,4 +49,4 @@ All notable changes to this project will be documented in this file.
 
 ![Byrne-Systems](http://byrne-systems.com/content/static/cube_sm.png)
 
-==Byrne-Systems © 2021 - All rights reserved.==
+==Byrne-Systems © 2022 - All rights reserved.==
