@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.23] - 2022-09-17
+### Added
+- settings constant to contain unique scale settings
+- getNote() to get a single (open) note, with regards to the instruments current tuning
+- mapModes() to map all available modes
+- drawModeFingering() to draw lines between each mode's fingering
+- drawModeOutlines() to draw lines around each mode's fingering
+- drawFretboardFrets() to draw thicker frets across fretboard
+- displayFretNumbers() to display fret numbers at the bottom of the fretboard
+
+### Changed
+- Consolidated all colors into constant colors
+- fretboardNotes variable converted into a 'notes' array, in settings; to store the same values
+- moved 'scale' variable into settings constant
+- renamed generateOpenNotes() to mapOpenNotes()
+- renamed generateFretboardNotes() to mapFretboardNotes()
+
+
 ## [1.1.14] - 2022-09-03
 ### Added
 - settings object within 'config' object, for HTML5 canvas API drawing properties
@@ -34,7 +52,12 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.1.14]: 2022-09-03 [CURRENT REVISION]
+[1.3.23]: 2022-09-17 [CURRENT REVISION]
+
+[1.1.14]: 2022-09-03 [95cb934](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/95cb934) incorporated various basic HTML5 canvas calls to render fretboard and notes; general cleanup
+
+[1.0.0]: 2022-01-05 [0169cd4](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/0169cd4) initial upload
+
 ---
 
 ## Types of changes

@@ -146,7 +146,7 @@ Object.entries ( testValues.scales.major ).forEach ( ( element, index ) =>
 {
     console.group ( element[0] );
 
-    let testScale = setScale ( tone.scale.major, element[0] );
+    let testScale = setScale ( element[0], tone.scale.major );
 
     for ( let i = 0; i < testScale.length; i++ )
     {
