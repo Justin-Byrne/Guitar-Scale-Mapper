@@ -1,6 +1,26 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.36] - 2022-09-26
+### Added
+- main() function, to hold main procedures
+- generateNextNote() to generate the next note 
+- getNextNote() to return the next active note
+- getPriorNote() to return the prior active note
+- getAllNotes() to return all active notes, based on note passed via param
+- drawFingerBoundingBox() to draw a bounding box for fingering optimization
+
+### Changed
+- refactored getNextNote() between generateNextNote() & getNextNote()
+- changed getNote() to generateNote()
+- changed setScale() to generateScale()
+- getStartNote() to include more functionality
+- refactored mapModes() with a more optimized configuration
+
+### Removed
+- removed Array.prototype.containsArray() function
+- removed Array.prototype.pushPop() function
+
 ## [1.3.23] - 2022-09-17
 ### Added
 - settings constant to contain unique scale settings
@@ -17,7 +37,6 @@ All notable changes to this project will be documented in this file.
 - moved 'scale' variable into settings constant
 - renamed generateOpenNotes() to mapOpenNotes()
 - renamed generateFretboardNotes() to mapFretboardNotes()
-
 
 ## [1.1.14] - 2022-09-03
 ### Added
@@ -52,7 +71,9 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.3.23]: 2022-09-17 [CURRENT REVISION]
+[1.3.36]: 2022-09-26 [CURRENT REVISION]
+
+[1.3.23]: 2022-09-17 [3ddbfa8](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/3ddbfa8) incorporated mode mapping and drawing; general cleanup of settings
 
 [1.1.14]: 2022-09-03 [95cb934](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/95cb934) incorporated various basic HTML5 canvas calls to render fretboard and notes; general cleanup
 
