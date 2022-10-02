@@ -10,7 +10,7 @@ body {
   margin: 0; }
 
 .flyout-nav {
-  position: absolute;
+  position: fixed;
   z-index: 5; }
   .flyout-nav ul {
     background: #eee;
@@ -77,8 +77,8 @@ body {
       left: 0; }
 
 #fretboard {
-  width: 93%;
-  aspect-ratio: 3 / 1;
+  width: 175%;
+  aspect-ratio: 5 / 1;
   margin-top: 60px;
   margin-left: 40px;
   position: absolute;
@@ -116,7 +116,8 @@ body {
 
 #canvas {
   display: block;
-  position: absolute; }
+  position: absolute;
+  padding-right: 60px; }
 
 #canvas-underlay {
   display: block;

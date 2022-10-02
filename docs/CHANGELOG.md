@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.43] - 2022-10-02
+### Changed
+- expanded fretboard to 24 frets
+- expanded notes array under the fretboard array to organize various note array patterns
+- refactored & optimized generateNextNote() function
+- refactored & optimized mapOpenNotes() function
+- refactored & optimized mapFretboardNotes() function
+- refactored & optimized mapFretboardNotes() mapModes
+- cleaned up drawModeOutlines
+
+### Removed
+- removed getNextNote(), getAllNotes(), getPriorNote(), and getLastNote()
+
 ## [1.3.36] - 2022-09-26
 ### Added
 - main() function, to hold main procedures
@@ -71,7 +84,9 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.3.36]: 2022-09-26 [CURRENT REVISION]
+[1.4.43]: 2022-10-02 [CURRENT REVISION]
+
+[1.3.36]: 2022-09-26 [4933e69](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/4933e69) general refactoring
 
 [1.3.23]: 2022-09-17 [3ddbfa8](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/3ddbfa8) incorporated mode mapping and drawing; general cleanup of settings
 

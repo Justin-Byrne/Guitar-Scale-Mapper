@@ -19,10 +19,10 @@ const config =
     context2: document.getElementById("canvas-underlay").getContext("2d"),
     domWindow: 
     {
-        width:     window.innerWidth  - 18,
-        height:    window.innerHeight -  4,
-        xCenter: ( window.innerWidth  /  2 ),
-        yCenter: ( window.innerHeight /  2 )
+        width:    window.innerWidth  - 18,
+        height:   window.innerHeight -  4,
+        xCenter: (window.innerWidth  /  2),
+        yCenter: (window.innerHeight /  2)
     },
     debug:          false,
     windows:
@@ -65,14 +65,11 @@ const config =
         Author:    'Justin Don Byrne',
         Created:   'January, 5 2022',
         Library:   'Guitar Scale Mapper',
-        Updated:    undefined,
-        Version:    undefined,
+        Updated:   'September, 26 2022',
+        Version:   '1.3.36',
         Copyright: 'Copyright (c) 2022 Justin Don Byrne'
     }
 }
-
-config.about.Updated = 'October, 26 2022';
-config.about.Version = '1.4.43';
 
 const colors =
 {
@@ -136,21 +133,6 @@ const mouse =
 
 ////////                            GLOBAL CONSTANTS (INSTRUMENT SPECIFIC)                  ////////
 
-const settings = 
-{
-    tuning: { },
-    scale:
-    {
-        type:  { },
-        tonic: null,
-        notes: [ ]
-    },
-    middleNote:    'B',
-    maxFrets:      24,
-    maxStrings:    6,
-    maxFingerspan: 4
-};
-
 const fretboard =
 {
     element: document.getElementById('fretboard'),
@@ -161,23 +143,14 @@ const fretboard =
     },
     partition:
     {
-        width:  document.getElementById('fretboard').clientWidth  / ( settings.maxFrets   + 1 ),
-        height: document.getElementById('fretboard').clientHeight / ( settings.maxStrings + 1 )
+        width:  document.getElementById('fretboard').clientWidth  / 13,
+        height: document.getElementById('fretboard').clientHeight / 7
     },
-    fingering: 
-    {
-        notes:  [ ]
-    },
-    maxFrets:      settings.maxFrets,
-    maxStrings:    settings.maxStrings,
-    maxFingerspan: settings.maxFingerspan,
-    notes:         
-    {
-        full:    [ ],
-        clean:   [ ],
-        strings: [ ],
-        modes:   [ ]
-    }
+    maxFrets:       12,
+    maxStrings:      6,
+    maxFingerspan:   4,
+    notes:      [ { } ],
+    strings:    [ ]
 }
 
 const tone =
@@ -255,9 +228,21 @@ const tone =
 ////////                            GLOBAL VARIABLES                                        ////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+let settings = 
+{
+    tuning: { },
+    scale:
+    {
+        type:  { },
+        tonic: null,
+        notes: [ ]
+    },
+    middleNote: 'B'
+};
+
 settings.tuning      = tone.tuning.standard;
-settings.scale.type  = tone.scale.major;
-// settings.scale.type  = tone.scale.blues.pentatonic;
+// settings.scale.type  = tone.scale.major;
+settings.scale.type  = tone.scale.blues.pentatonic;
 settings.scale.tonic = 'E';
 
 ////////                            Debug Output                                            ////////
@@ -265,7 +250,7 @@ settings.scale.tonic = 'E';
 console.clear ( );
 
 console.log ( 'configuration: ', config );
-console.log ( 'Window Width:  ', config.domWindow.width, 'Height:', config.domWindow.height );
+console.log ( 'Window Width:',   config.domWindow.width, 'Height:', config.domWindow.height );
 
 //---   binding of resize()   ---//
 window.addEventListener ( 'resize', main );
@@ -312,29 +297,29 @@ Number.prototype.convert2digStr = function()
 
 function main ( )
 {
-    ////    INIT       /////////////////////////////////////
+    ////    INIT       /////////////
 
     setupEnvironment ( );
 
     settings.scale.notes = generateScale ( );
 
-    ////    MAP        /////////////////////////////////////
+    ////    MAP        /////////////
 
     mapOpenNotes      ( );
 
     mapFretboardNotes ( );
 
-    fretboard.notes.modes = mapModes ( );
+    fretboard.fingering = mapModes ( );
 
-    ////    DRAW       /////////////////////////////////////
+    ////    DRAW       /////////////
 
     drawFretboard      ( 'cells' );
 
     drawFretboardFrets ( );
 
-    ////    DISPLAY    /////////////////////////////////////
+    ////    DISPLAY    /////////////
 
-    displayNoteMarkers ( );
+    displayNoteMarkers    ( );
 
     let display = 
     { 
@@ -348,9 +333,14 @@ function main ( )
 
     displayFretNumbers    ( );
 
-    ////    DRAW       /////////////////////////////////////
+    // console.log ( 'fretboard.fingering: ' );
+    // console.log ( fretboard.fingering );
 
-    drawModeOutlines  ( 1 );
+    ////    DRAW       /////////////
+    
+    // drawFingerBoundingBox  ( 0 );
+
+    // drawFingeringOutlines  ( 1 );
 
     // insertUIElements();
 }
@@ -401,7 +391,7 @@ function clearCanvas ( )
  * @param                   {string}  fill.color        Fill RGB number set for fill; r, g, b
  * @param                   {decimal} fill.alpha        Fill alpha (transparency) number value
  */
-function drawRectangle ( x, y, width, height, stroke = { color: '255, 255, 255', alpha: 1, width: 4 }, fill = { color: '255, 255, 255', alpha: 0 } )
+function drawRectangle ( x, y, width, height, stroke = { color: '255, 255, 255', alpha: 1, width: 3 }, fill = { color: '255, 255, 255', alpha: 0 } )
 {
     config.context.beginPath();
 
@@ -526,113 +516,55 @@ function toggleCheckbox ( id, check = null )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * generateNextNote()       {Method}                    Generates the next note 
+ * generateNextNote()       {Method}                    Returns the next note 
  * @param                   {boolean} cell              Cell value for the initial note; used to generate secondary note
  * @return                  {Object}                    Note with additional property values
  */
-function generateNextNote ( index )
+function generateNextNote ( cell )
 {
+    let indexes =
+    {
+        note:  undefined,
+        scale: undefined
+    }
+    
     let result = 
     { 
-        note:     undefined,
+        note:     undefined, 
         octave:   undefined,
         interval: undefined,
         details: 
         {
             cell:     undefined,
-            string:   undefined,
-            fret:     undefined,
-            display:  undefined,
-            coordinates: 
-            {
-                x: undefined,
-                y: undefined
-            }
+            display:  undefined
         }
     };
 
-    ////////////////////////////////////////////////////////////////////////////
-    ///     FUNCTIONS   ////////////////////////////////////////////////////////
+    let initialNote   = fretboard.notes[ ( cell - 1 ) ].note;
 
-    function getInterval ( note )
-    {
-        let noteIndex = settings.scale.notes.indexOf ( note.note );
+        indexes.note  = ( tone.notes.indexOf ( initialNote ) == 11 )       
+                            ? 0
+                            : tone.notes.indexOf ( initialNote ) + 1;
+
+        indexes.scale = settings.scale.notes.indexOf ( tone.notes[indexes.note] );
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        result.note            = tone.notes[indexes.note];                      // NOTE
+
+        result.octave          = ( initialNote == settings.middleNote )         // OCTAVE
+                                     ? fretboard.notes[ ( cell - 1 ) ].octave + 1
+                                     : fretboard.notes[ ( cell - 1 ) ].octave;
+
+        result.interval        = ( indexes.scale != -1 )                        // INTERVAL
+                                     ? settings.scale.notes.indexOf ( result.note ) + 1
+                                     : null;
     
-        return ( noteIndex != -1 )                                             
-                   ? settings.scale.notes.indexOf ( note.note ) + 1
-                   : null;
-    }
+        result.details.cell    = cell;                                          // CELL
 
-    function getDisplay ( note )
-    {
-        let noteIndex = settings.scale.notes.indexOf ( note.note );
-        
-        return ( noteIndex != -1 ) ? true : false;
-    }
-
-    function getString ( note )
-    {
-        let value = index / ( fretboard.maxFrets + 1 );
-
-        for ( let i = 1; i < fretboard.maxStrings + 1; i++ )                                        
-        {
-            if ( value < i ) 
-            { 
-                return i;
-            }
-        }
-    }
-
-    function getCoordinates ( note )
-    {
-        let x = fretboard.partition.width  * ( note.details.fret ) + ( fretboard.partition.width  / 2 );                    // Horizontal
-        let y = fretboard.partition.height * ( note.details.string - 1 ) - ( fretboard.size.height - fretboard.partition.height * 1.5 );    // Vertical
-            y = - ( y );
-
-        return { x, y };
-    }
-
-    ///     FUNCTIONS   ////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    if ( fretboard.notes.full[index] != undefined )
-    {
-        let note = fretboard.notes.full[index];
-
-            note.details.coordinates = getCoordinates ( note );
-
-        result = note;
-    }
-    else
-    {
-        let notePrevious = fretboard.notes.full[ ( index - 1 ) ];
-
-        let noteIndex    = ( tone.notes.indexOf ( notePrevious.note ) == tone.notes.length - 1 )       
-                               ? 0
-                               : tone.notes.indexOf ( notePrevious.note ) + 1;
-        
-        ///  CORE  /////////////////////////////////////////
-
-            result.note     = tone.notes[noteIndex];
-
-            result.interval = getInterval ( result );
-
-            result.octave   = ( notePrevious == settings.middleNote )
-                                  ? notePrevious.octave + 1
-                                  : notePrevious.octave;
-
-        ///  DETAILS  //////////////////////////////////////
-
-            result.details.cell        = index;
-
-            result.details.string      = getString ( result );
-
-            result.details.fret        = index - ( ( fretboard.maxFrets + 1 ) * ( result.details.string - 1 ) );
-
-            result.details.display     = getDisplay ( result );
-
-            result.details.coordinates = getCoordinates ( result );
-    }
+        result.details.display = ( indexes.scale != -1 )                        // DISPLAY
+                                     ? true
+                                     : false;
 
     return result;
 }
@@ -654,8 +586,6 @@ function generateNote ( tuning )
         details:
         {
             cell:     undefined,
-            string:   undefined,
-            fret:     undefined,
             display:  undefined
         }
     };
@@ -684,11 +614,12 @@ function generateScale ( tonic = settings.scale.tonic, type = settings.scale.typ
 {
     let index    = tone.notes.indexOfArray ( tonic );
 
-    let scale    = Array ( );
+    let scale    = Array();
 
         scale[0] = tone.notes[index];                       // Set: tonic note
-    
-    for ( let i = 1, j = 0; i <= type.length; i++, j++ )    // Circle around scale array if at the end
+
+    // Circle around scale array if at the end
+    for ( let i = 1, j = 0; i <= type.length; i++, j++ )
     {
         switch ( index + type[j] )
         {
@@ -711,18 +642,115 @@ function generateScale ( tonic = settings.scale.tonic, type = settings.scale.typ
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+////////                            NOTE SPECIFIC FUNCTIONS                                 ////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function getNextNote ( note )
+{
+    let result = undefined;
+    let index  = note.details.cell + 1;
+    
+    do
+    {
+        result = ( fretboard.notes[index].details.display )
+                     ? fretboard.notes[index]
+                     : undefined;
+        
+        index++;
+    } 
+    while ( result == undefined );
+
+    return result;
+}
+
+function getPriorNote ( note )
+{
+    let result = undefined;
+    let index  = note.details.cell - 1;
+
+    do
+    {
+        result = ( fretboard.notes[index].details.display )
+                     ? fretboard.notes[index]
+                     : undefined;
+
+        index--;
+    }
+    while ( result == undefined );
+
+    return result;
+}
+
+function getAllNotes ( note )
+{
+    let result = [ note ];
+    let next   = getNextNote ( note );
+    let last   = getLastNote ( );
+
+    do
+    {
+        ( next.note == note.note )
+            ? result.push ( next )
+            : undefined;
+
+        next = getNextNote ( next );
+    }
+    while ( next.details.cell < last.details.cell );
+
+    return result;
+}
+
+function getStartNote ( )
+{
+    let result = undefined;
+    let index  = 0;
+
+    do
+    {
+        result = ( fretboard.notes[index].details.display )
+                     ? fretboard.notes[index]
+                     : undefined;
+
+        index++;
+    }
+    while ( result == undefined );
+
+    return result;
+}
+
+/**
+ * getLastNote()            {Method}                Gets the last active note within the current scale; on the fretboard
+ * @return                  {Object}                Last active note on the fretboard
+ */
+function getLastNote ( )
+{
+    let result = undefined;
+    let index  = fretboard.notes.length - 1;
+
+    do                                                                                              // Set: last note
+    {
+        result = ( fretboard.notes[index].details.display )
+                     ? fretboard.notes[index]
+                     : undefined;
+
+        index--;
+    }
+    while ( result == undefined );
+
+    return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////                            MAPPING FUNCTIONS                                       ////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * mapOpenNotes()           {Method}                    Generate open notes for fretboard
+ * mapOpenNotes()      {Method}                    Generate open notes for fretboard
  * @param                   {Array} tuning              Tuning array from 'tone' Object
  */
 function mapOpenNotes ( )
 {
-    let note  = undefined;
-    let cell  = undefined;
-    let index = undefined;
+    let cell = undefined;
 
     settings.tuning.reverse ( );    // Invert tuning to ensure low notes match with lower array index values
 
@@ -730,85 +758,47 @@ function mapOpenNotes ( )
     {
         cell = ( i * fretboard.maxFrets ) + i;
 
-        note                 = generateNote ( settings.tuning[i] );
-        note.details.cell    = cell;
-        note.details.string  = ( i + 1 );
-        note.details.fret    = 0;
-        note.details.display = ( settings.scale.notes.indexOf ( note.note ) != -1 )
-                                   ? true
-                                   : false;
-
-        fretboard.notes.full[cell] = note;
+        fretboard.notes[cell]                = generateNote ( settings.tuning[i] );
+        fretboard.notes[cell].details.cell   = cell;
+        fretboard.notes[cell].details.fret   = 0;
+        fretboard.notes[cell].details.string = ( i + 1 );
     }
 }
 
 /**
- * mapFretboardNotes()      {Method}                    Generate fret notes for fretboard
+ * mapFretboardNotes() {Method}                    Generate fret notes for fretboard
  */
 function mapFretboardNotes ( )
 {
-    let note = undefined;
     let cell = 0;
 
-    ////////////////////////////////////////////////////////////////////////////
-    ///     FUNCTIONS   ////////////////////////////////////////////////////////
-
-    function parseFull2Clean ( )
+    for ( let i = 0; i < fretboard.maxStrings; i++ )                            // Horizontal cells
     {
-        let cell = 0;
-
-        do
+        for ( let j = 0; j < ( fretboard.maxFrets + 1 ); j++ )                  // Vertical cells
         {
-            let note = fretboard.notes.full[cell];
+            let x = fretboard.partition.width  * j + ( fretboard.partition.width / 2 );                                // Horizontal
+            let y = fretboard.partition.height * i - ( fretboard.size.height  - fretboard.partition.height * 1.5 );    // Vertical
+                y = - ( y );
 
-            if ( note.details.display )
+            if ( cell % ( fretboard.maxFrets + 1 ) == 0 )
             {
-                fretboard.notes.clean.push ( note );
+                fretboard.notes[cell].details.x = x;
+                fretboard.notes[cell].details.y = y;
+
+                cell++;
+
+                continue;
             }
 
-            cell++;
-        }
-        while ( cell < fretboard.notes.full.length );
-    }
-
-    function parseFull2Strings ( )
-    {
-        let cell = 0;
-
-        for ( let i = 0; i < fretboard.maxStrings; i++ )
-        {
-            fretboard.notes.strings.push ( new Array ( ) );
-        }    
-
-        do
-        {
-            let note = fretboard.notes.clean[cell];
-
-            fretboard.notes.strings[note.details.string - 1].push ( note );
+            fretboard.notes[cell]                = generateNextNote ( cell );
+            fretboard.notes[cell].details.fret   = j;
+            fretboard.notes[cell].details.string = ( i + 1 );
+            fretboard.notes[cell].details.x      = x;
+            fretboard.notes[cell].details.y      = y;
 
             cell++;
         }
-        while ( cell < fretboard.notes.clean.length );
     }
-
-    ///     FUNCTIONS   ////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    let max = fretboard.maxStrings * ( fretboard.maxFrets + 1 )
-
-    do
-    {
-        fretboard.notes.full[cell] = generateNextNote ( cell );
-
-        cell++;
-    }
-    while ( cell < max );
-
-    ////////////////////////////////
-    ///  CLEAN UP //////////////////
-
-    parseFull2Clean   ( );
-    parseFull2Strings ( );
 }
 
 /**
@@ -817,162 +807,171 @@ function mapFretboardNotes ( )
  */
 function mapModes ( )
 {
-    let result    = Array ( );
-    let mode      = Array ( );
-    let strings   = fretboard.notes.strings;
-    let modeIndex = 0;
-    let modeMax   = settings.scale.notes.length;
-    
-    let finalFret = undefined;
+    let result = Array ( );
+    let temp   = Array ( );
 
-    ////////////////////////////////////////////////////////////////////////////
-    ///     FUNCTIONS   ////////////////////////////////////////////////////////
-    
-    function setStartingNotes ( modeIndex )
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////    FUNCTIONS    ///////////////////////////////////////////////////////////////////////////
+
+    function getLeftBoundFret ( array )
     {
-        let index   = 0;
+        let index  = array.length - 1;
+        let result = array[index].details.fret;
 
-        do
-        {  
-            mode.push ( new Array ( strings[index][modeIndex] ) );
+        while ( index > 0 )
+        {
+            index--;
+
+            result = ( result > array[index].details.fret )
+                ? array[index].details.fret
+                : result;
+        }
+
+        return result;
+    }
+
+    function getDistance ( root, next )
+    {
+        let fretDistance   = next.details.fret   - root.details.fret;
+        let stringDistance = next.details.string - root.details.string; 
+
+        fretDistance = ( fretDistance < 0 )
+            ? - ( fretDistance )
+            : fretDistance;
+
+            fretDistance += next.details.fret;
+
+        return ( fretDistance + stringDistance );
+    }
+
+    function getClosestNote ( root, array )
+    {
+        let index = 0;
+        let temp  = Array ( );
+
+        do      // clear out all notes that are more than 1 string away
+        {
+            if ( root.details.string == fretboard.maxStrings )
+            {
+                break;
+            }
+
+            ( ( root.details.string + 1 ) < array[index].details.string )
+                ? array = temp
+                : temp.push ( array[index] );
 
             index++;
         }
-        while ( index < fretboard.maxStrings );
-    }
+        while ( index < array.length );
 
-    function bundleMode ( )
-    {
-        let result = Array ( );
-
-        mode.forEach ( ( element ) => 
+        do      // remove all furthest notes
         {
-            element.forEach ( ( element ) => 
-            {
-                result.push ( element );
-            });
-        } );
+            index = ( getDistance ( root, array[0] ) < getDistance ( root, array[1] ) )
+                        ? array.indexOf ( array[1] )
+                        : array.indexOf ( array[0] );
 
-        mode.length = 0;            // Reset: mode array
+            array.splice ( index, 1 );
+        } 
+        while ( array.length > 1 );
 
-        return result;
+        return array[0];
     }
 
-    function getBoundingBox ( )
-    {
-        let result = [ mode[0][0].details.fret - 1, 0 ];
-
-        for ( let i = 0; i < mode.length; i++ )
-        {
-            for ( let j = 0; j < mode[i].length; j++ )
-            {
-                if ( mode[i][j].details.fret > result[1] )
-                {
-                    result[1] = mode[i][j].details.fret;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    function getNoteIndexFromString ( note, string )
+    function getNextModeNote ( array )
     {
         let result = undefined;
+        let index  = array.length - 1;
+        let offset = ( settings.scale.type.length < 5 ) ? 1 : 0;
 
-        for ( let j = 0; j < string.length; j++ )
+        let fretLeft      = getLeftBoundFret ( array );
+        let fretRight     = fretLeft + fretboard.maxFingerspan - offset;
+        let currentString = array[index].details.string;
+
+        let next   = getNextNote ( array[index] );
+        let search = getAllNotes ( next );
+
+            index  = 0;
+
+            console.log ( 'fretLeft:  ', fretLeft  );
+            console.log ( 'fretRight: ', fretRight );
+            console.log ( `search[${index}]: `, search[index] );
+
+        while ( search.length > index )                     // Remove: any notes outside of the finger-span boundary box
         {
-            if ( string[j].note == note.note )
-            {
-                result = j;
-
-                break;
-            }
+            ( search[index].details.fret   >  fretRight     && 
+              search[index].details.string == currentString )
+                ? search.splice ( index, 1 )
+                : index++; 
         }
+
+        result = ( search.length > 1 )
+                     ? getClosestNote ( search[search.length - 2], search )
+                     : search[0];
 
         return result;
     }
 
-    ///     FUNCTIONS   ////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    let cycle = 0;
-    let run   = true;
-
-    do
+    function getLastNoteOnString ( array, string )
     {
-        setStartingNotes ( modeIndex );
+        let result = undefined;
+        let index  = array.length - 1;
 
         do
         {
-            modeGeneration:
-            for ( let i = 0; i < mode.length; i++ )
+            if ( array[index].details.string != string )
             {
-                let root       = mode[i][mode[i].length - 1];
-
-                let nextIndex  = strings[i].indexOf ( root ) + 1;
-
-                let next       = strings[i][nextIndex];
-
-                let nextString = ( root.details.string < fretboard.maxStrings ) 
-                                     ? root.details.string
-                                     : 0;
-
-                let nextNext   = mode[nextString][0];
-
-                ////////////////////////////////////////////////////////////////////////////////////
-
-                if ( root.details.string == fretboard.maxStrings )
-                {
-                    finalFret = mode[0][mode[0].length - 1].details.fret;
-                }
-
-                if ( next.note != nextNext.note && root.details.fret != fretboard.maxStrings )
-                {
-                    if ( root.details.fret == finalFret && root.details.string == fretboard.maxStrings )    // END OF MODE !!!
-                    {
-                        run = false;
-
-                        break;
-                    }
-
-                    let searchIndex = getNoteIndexFromString ( next, strings[nextString] );
-
-                    for ( let j = searchIndex; j >= 0; j-- )
-                    {
-                        let note = strings[nextString][j];
-                        let box  = getBoundingBox ( );
-
-                        if ( note.note == next.note && note.details.fret >= box[0] && note.details.fret <= box[1] - 1 )
-                        {
-                            mode[nextString].unshift ( note );
-                            
-                            continue modeGeneration;
-                        }
-                    }
-
-                    mode[i].push ( next );
-                }
-                else
-                {
-                    continue;
-                }
+                index--;
+            }
+            else
+            {
+                result = array[index];
             }
 
-            cycle++;
         }
-        while ( run && cycle < 4 );
+        while ( result == undefined );
 
-        result.push ( bundleMode ( ) );
-
-        // RESET
-        finalFret = undefined;
-        cycle     = 0;
-        run       = true;
-        
-        modeIndex++;    
+        return result;
     }
-    while ( modeIndex < 3 );        // modeMax goes here once complete
+
+    ////    FUNCTIONS    ///////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // let leftFret = undefined;
+
+    // let index = 0;
+    let next = undefined;
+
+    temp.push ( getStartNote ( ) );
+
+    do      // Get all mode notes : mode 0
+    {
+        next = getNextModeNote ( temp );
+
+        if ( next != undefined )
+        {
+            temp.push ( next );
+        }
+        else
+        {
+            // find last note on string 1
+            // index++;
+            result.push ( temp );
+
+            temp = [];
+
+            let index = result.length - 1;
+
+            next = getLastNoteOnString ( result[index], 1 );
+
+            console.log ( 'next: ', next );
+
+            temp.push ( next );
+        }
+    } 
+    while ( result.length < 2 );
+
+    console.log ( 'temp: ', temp );
+    console.log ( 'result: ', result );
 
     return result;
 }
@@ -997,40 +996,50 @@ function displayNoteMarkers ( type = 'circle' )
 
     let conditions = [ 2, 4, 6, 7 ];                        // notes without color indexes
 
-    do
+    for ( let i = 0; i < fretboard.maxStrings; i++ )                            // Horizontal cells
     {
-        for ( let i = 0; i < conditions.length; i++ )
+        for ( let j = 0; j < ( fretboard.maxFrets + 1 ); j++ )                  // Vertical cells
         {
-            if ( fretboard.notes.clean[index].interval == conditions[i] ) 
+            if ( fretboard.notes[index].note == undefined ) 
             { 
-                color.fill = '255, 255, 255';  
-
-                break; 
+                continue;
             }
 
-            color.fill = colors.tone[fretboard.notes.clean[index].interval];
+            for ( let i = 0; i < conditions.length; i++ )
+            {
+                if ( fretboard.notes[index].interval == conditions[i] ) 
+                { 
+                    color.fill = '255, 255, 255';  
+
+                    break; 
+                }
+
+                color.fill = colors.tone[fretboard.notes[index].interval];
+            }
+
+            if ( fretboard.notes[index].details.display )                       // Check: display property
+            {   
+                let radius = ( fretboard.partition.height / 2 ) - 5;
+
+                drawCircle (
+                    fretboard.notes[index].details.x,       // x
+                    fretboard.notes[index].details.y,       // y
+                    radius,                                 // radius
+                    undefined,                              // angle
+                    {
+                        color: color.stroke,                // stroke.color
+                        alpha: 1                            // stroke.alpha
+                    },
+                    {
+                        color: color.fill,                  // fill.color
+                        alpha: 1                            // fill.alpha
+                    }
+                );
+            }
+
+            index++;
         }
-
-        let radius = ( fretboard.partition.height / 2 ) - 5;
-
-        drawCircle (
-            fretboard.notes.clean[index].details.coordinates.x,                 // x
-            fretboard.notes.clean[index].details.coordinates.y,                 // y
-            radius,                                                             // radius
-            undefined,                                                          // angle
-            {
-                color: color.stroke,                                            // stroke.color
-                alpha: 1                                                        // stroke.alpha
-            },
-            {
-                color: color.fill,                                              // fill.color
-                alpha: 1                                                        // fill.alpha
-            }
-        );
-
-        index++;
     }
-    while ( index < fretboard.notes.clean.length );
 }
 
 /**
@@ -1041,46 +1050,55 @@ function displayFretboardNotes ( show = { octave: false, interval: false, string
 {
     let index = 0;
 
-    do
+    for ( let i = 0; i < fretboard.maxStrings; i++ )                            // Horizontal cells
     {
-        let offset = 4;
-
-        let text   = fretboard.notes.clean[index].note;
-
-        if ( show.octave )
+        for ( let j = 0; j < ( fretboard.maxFrets + 1 ); j++ )                  // Vertical cells
         {
-            text  += `${fretboard.notes.clean[index].octave}`;
+            let offset = 4;
+
+            if ( fretboard.notes[index].note == undefined ) { continue; }
+
+            let text   = fretboard.notes[index].note;
+
+            if ( show.octave )
+            {
+                text  += `${fretboard.notes[index].octave}`;
+            }
+
+            if ( show.interval )
+            {
+                text  += ` (${fretboard.notes[index].interval})`;
+            }
+
+            if ( show.string )
+            {
+                text  += `{${fretboard.notes[index].details.string}}`;
+            }
+
+            if ( show.fret )
+            {
+                text  += ` - ${fretboard.notes[index].details.fret}`;
+            }
+
+                offset = ( index == 0 ) ? offset : 0;
+
+            if ( fretboard.notes[index].details.display )
+            {
+                displayText (
+                    fretboard.notes[index].details.x - offset,                  // x
+                    fretboard.notes[index].details.y,                           // y
+                    `${text}`,                                                  // text
+                    undefined,
+                    fretboard.partition.width,                                  // width
+                    // colors.octave[fretboard.notes[index].octave]                // color
+                );
+
+                
+            }
+
+                index++;
         }
-
-        if ( show.interval )
-        {
-            text  += ` (${fretboard.notes.clean[index].interval})`;
-        }
-
-        if ( show.string )
-        {
-            text  += `{${fretboard.notes.clean[index].details.string}}`;
-        }
-
-        if ( show.fret )
-        {
-            text  += ` - ${fretboard.notes.clean[index].details.fret}`;
-        }
-
-            offset = ( index == 0 ) ? offset : 0;
-
-        displayText (
-            fretboard.notes.clean[index].details.coordinates.x - offset,        // x
-            fretboard.notes.clean[index].details.coordinates.y,                 // y
-            `${text}`,                                                          // text
-            undefined,
-            fretboard.partition.width,                                          // width
-            // colors.octave[fretboard.notes.clean[index].octave]                   // color
-        );
-
-            index++;
     }
-    while ( index < fretboard.notes.clean.length );
 }
 
 /**
@@ -1225,10 +1243,6 @@ function drawFretboardFrets ( frets = [ 12 ], color = '170, 170, 170' )
     }
 }
 
-/**
- * drawFingerBoundingBox()  {Method}                    Draws a bounding box for fingering optimization
- * @param                   {number} start              Fret to start at
- */
 function drawFingerBoundingBox ( start )
 {
     let alpha = 0.1;
@@ -1288,12 +1302,12 @@ function drawFingering ( modeNo )
 }
 
 /**
- * drawModeOutlines()       {Method}                Draws lines around each mode's fingering
+ * drawFingeringOutlines()  {Method}                Draws lines around each mode's fingering
  * @param                   {number} modeNo         Mode(s) to display
  */
-function drawModeOutlines ( modeNo )
+function drawFingeringOutlines ( modeNo )
 {
-    let modeOutline = fretboard.notes.modes;
+    let modeOutline = fretboard.fingering.notes;
     let increment   = 1;
     let start       = modeNo - 1;
 
@@ -1318,6 +1332,7 @@ function drawModeOutlines ( modeNo )
         temp[0].push ( modeOutline[start][0] );             // Set: initial starting note
         temp[1].push ( modeOutline[start][0] );             // Set: initial starting note
 
+    
     for ( let i = start; i < modeNo; i++ )                                                          // Identify parameter
     {
         for ( let j = 1; j < modeOutline[i].length; j++ )
@@ -1344,14 +1359,62 @@ function drawModeOutlines ( modeNo )
         for ( let j = 0; j < ( temp[i].length - 1 ); j++ )
         {
             drawLine ( 
-                temp[i][  j  ].details.coordinates.x,                           // xStart
-                temp[i][j + 1].details.coordinates.x,                           // xEnd
-                temp[i][  j  ].details.coordinates.y,                           // yStart
-                temp[i][j + 1].details.coordinates.y,                           // yEnd
-                10,                                                             // lineWidth
-                colors.boxes[start],                                            // strokeColor
-                1                                                               // strokeAlpha
+                temp[i][  j  ].details.x,                    // xStart
+                temp[i][j + 1].details.x,                    // xEnd
+                temp[i][  j  ].details.y,                    // yStart
+                temp[i][j + 1].details.y,                    // yEnd
+                10,                                          // lineWidth
+                colors.boxes[start],                         // strokeColor
+                1                                            // strokeAlpha
             );
+        }
+    }
+
+    if ( false )                                                                                     // Right side
+    {
+        for ( let i = start; i < modeNo; i++ )                  
+        {
+            for ( let j = 0, increment = 1; j < ( modeOutline[i].length - 1 ); j = j + increment )
+            {
+                if ( j > 0 )
+                {
+                    increment = 2;
+                }
+
+                drawLine ( 
+                    modeOutline[i][      j      ].details.x,                    // xStart
+                    modeOutline[i][j + increment].details.x,                    // xEnd
+                    modeOutline[i][      j      ].details.y,                    // yStart
+                    modeOutline[i][j + increment].details.y,                    // yEnd
+                    10,                                                         // lineWidth
+                    colors.boxes[i],                                            // strokeColor
+                    1                                                           // strokeAlpha
+                );
+            }
+        }
+    }
+
+    if ( false )                                                                                     // Left side
+    {
+        for ( let i = start; i < modeNo; i++ )                  
+        {
+            for ( let j = 0, increment = 2; j < ( modeOutline[i].length - 1 ); j = j + 2 )
+            {
+               drawLine ( 
+                    modeOutline[i][      j      ].details.x,                    // xStart
+                    modeOutline[i][j + increment].details.x,                    // xEnd
+                    modeOutline[i][      j      ].details.y,                    // yStart
+                    modeOutline[i][j + increment].details.y,                    // yEnd
+                    10,                                                         // lineWidth
+                    colors.boxes[i],                                            // strokeColor
+                    1                                                           // strokeAlpha
+                );
+    
+                if ( j >= ( modeOutline[i].length - 4 ) )
+                {
+                     increment = 1;
+                }
+            }
         }
     }
 }

@@ -38,7 +38,8 @@ body
 
 .flyout-nav 
 {
-    position: absolute;
+    // position: absolute;
+    position: fixed;
     z-index: 5;
 
     // list of menu items at any level
@@ -172,9 +173,8 @@ body
 
 #fretboard
 {
-    width: 93%;
-    // height: 20%;
-    aspect-ratio: 3 / 1;
+    width: 175%;
+    aspect-ratio: 5 / 1;
     margin-top: 60px;
     margin-left: 40px;
     position: absolute;
@@ -232,6 +232,7 @@ body
 {
     display: block;
     position: absolute;
+    padding-right: 60px;
 }
 
 #canvas-underlay
