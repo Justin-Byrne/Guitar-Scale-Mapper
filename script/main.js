@@ -71,8 +71,8 @@ const config =
     }
 }
 
-config.about.Updated = 'October, 26 2022';
-config.about.Version = '1.4.43';
+config.about.Updated = 'November, 01 2022';
+config.about.Version = '1.5.57';
 
 const colors =
 {
@@ -225,30 +225,207 @@ const tone =
                 note :   'E',            
                 octave :  2
             }
+        ],
+        dropD :
+        [ 
+            {   // 6
+                note :   'E',            
+                octave :  4
+            },
+            {   // 5
+                note :   'B',            
+                octave :  3
+            },
+            {   // 4
+                note :   'G',            
+                octave :  3
+            },
+            {   // 3
+                note :   'D',            
+                octave :  3
+            },
+            {   // 2
+                note :   'A',            
+                octave :  2
+            },
+            {   // 1
+                note :   'D',            
+                octave :  2
+            }
+        ],
+        dStandard :
+        [ 
+            {   // 6
+                note :   'D',            
+                octave :  4
+            },
+            {   // 5
+                note :   'A',            
+                octave :  3
+            },
+            {   // 4
+                note :   'F',            
+                octave :  3
+            },
+            {   // 3
+                note :   'C',            
+                octave :  3
+            },
+            {   // 2
+                note :   'G',            
+                octave :  2
+            },
+            {   // 1
+                note :   'D',            
+                octave :  2
+            }
+        ],
+        dropC :
+        [ 
+            {   // 6
+                note :   'D',            
+                octave :  4
+            },
+            {   // 5
+                note :   'A',            
+                octave :  3
+            },
+            {   // 4
+                note :   'F',            
+                octave :  3
+            },
+            {   // 3
+                note :   'C',            
+                octave :  3
+            },
+            {   // 2
+                note :   'G',            
+                octave :  2
+            },
+            {   // 1
+                note :   'C',            
+                octave :  2
+            }
         ]
     },
-    scale :
+    scale : 
     {
-        major :
-        [
-            2,  // 0
-            2,  // 1
-            1,  // 2
-            2,  // 3
-            2,  // 4
-            2,  // 5
-        ],
-        blues : 
+        common :
         {
-            pentatonic :
-            [
-                3,  // 0
-                2,  // 1
-                2,  // 2
-                3,  // 3
-            ]
+            major :                         [ 2, 2, 1, 2, 2, 2 ],
+            harmonic_minor :                [ 2, 1, 2, 2, 1, 3 ],
+            melodic_minor :                 [ 2, 1, 2, 2, 2, 2 ],
+            natural_minor :                 [ 2, 1, 2, 2, 1, 2 ],
+            pentatonic_major :              [ 2, 2, 3, 2 ],
+            pentatonic_minor :              [ 3, 2, 2, 3 ],
+            pentatonic_blues :              [ 3, 2, 1, 1, 3 ],
+            pentatonic_neutral :            [ 2, 3, 2, 3, 2 ],
+            ionian :                        [ 2, 2, 1, 2, 2, 2 ],
+            dorian :                        [ 2, 1, 2, 2, 2, 1 ],
+            phrygian :                      [ 1, 2, 2, 2, 1, 2 ],
+            lydian :                        [ 2, 2, 1, 2 ],
+            mixolydian :                    [ 2, 2, 1, 2, 2, 1 ],
+            aeolian :                       [ 2, 1, 2, 2, 1, 2 ],
+            locrian :                       [ 1, 2, 2, 1, 2, 2 ],
+            diatonic :                      [ 2, 2, 3, 2 ],
+            diminished :                    [ 2, 1, 2, 1, 2, 1, 2 ],
+            diminished_half :               [ 1, 2, 1, 2, 1, 2, 1 ],
+            diminished_whole :              [ 2, 1, 2, 1, 2, 1, 2 ],
+            diminished_whole_tone :         [ 1, 2, 1, 2, 2, 2 ],
+            dominant_seventh :              [ 2, 2, 1, 2, 2, 1 ],
+            lydian_augmented :              [ 2, 2, 2, 2, 1, 2 ],
+            lydian_minor :                  [ 2, 2, 2, 1, 1, 2 ],
+            lydian_diminished :             [ 2, 1, 3, 1, 2, 2 ]
+        },
+        rare : 
+        {
+            chromatic :                     [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+            whole_tone :                    [ 2, 2, 2, 2, 2 ],
+            octatonic_hw :                  [ 1, 2, 1, 2, 1, 2, 1 ],
+            octatonic_wh :                  [ 2, 1, 2, 1, 2, 1, 2 ],
+            augmented :                     [ 3, 1, 2, 2, 3 ],
+            auxiliary_diminished :          [ 2, 1, 2, 1, 2, 1, 2 ],
+            auxiliary_augmented :           [ 2, 2, 2, 2, 2 ],
+            auxiliary_diminished_blues :    [ 1, 2, 1, 2, 1, 2, 1 ],
+            blues :                         [ 3, 2, 1, 1, 3 ],
+            double_harmonic :               [ 1, 3, 1, 2, 1, 3 ],
+            enigmatic :                     [ 1, 3, 2, 2, 2, 1 ],
+            half_diminished :               [ 1, 2, 2, 1, 2, 2 ],
+            half_diminished_2 :             [ 2, 1, 2, 1, 2, 2 ],
+            leading_whole_tone :            [ 2, 2, 2, 2, 2, 1 ],
+            major_locrian :                 [ 2, 2, 1, 1, 2, 2 ],
+            nine_tone_scale :               [ 2, 1, 1, 2, 1, 1, 1, 2 ],
+            overtone :                      [ 2, 2, 2, 1, 2, 1 ],
+            six_tone_symmetrical :          [ 1, 3, 1, 3, 1 ],
+            altered :                       [ 1, 2, 1, 2, 1, 1 ],
+            bebop_major :                   [ 2, 2, 1, 2, 1, 1, 2 ],
+            bebop_minor :                   [ 2, 1, 1, 1, 2, 2, 1 ],
+            bebop_dominant :                [ 2, 2, 1, 2, 2, 1, 1 ],
+            bebop_half_diminished :         [ 1, 2, 2, 1, 1, 1, 3 ],
+            blues_1 :                       [ 3, 2, 1, 1, 3, 1 ],
+            blues_2 :                       [ 3, 1, 1, 1, 1, 3, 1 ],
+            blues_3 :                       [ 3, 1, 1, 1, 1, 2, 1, 1 ],
+            major_blues_scale :             [ 2, 1, 1, 3, 2 ],
+            dominant_pentatonic :           [ 2, 2, 3, 3 ],
+            locrian_6 :                     [ 1, 2, 2, 1, 3, 1 ],
+            ionian_5 :                      [ 2, 2, 1, 3, 1, 2 ],
+            dorian_4 :                      [ 2, 1, 3, 1, 2, 1 ],
+            phrygian_major :                [ 1, 3, 1, 2, 1, 2 ],
+            lydian_2 :                      [ 3, 1, 2, 1, 2, 2 ],
+            ultralocrian :                  [ 1, 2, 1, 2, 2, 1 ],
+            mixo_blues :                    [ 3, 1, 1, 1, 1, 3 ]
+        },
+        exotic : 
+        {
+            algerian :                      [ 2, 1, 2, 1, 1, 1, 3 ],
+            arabian_1 :                     [ 2, 1, 2, 1, 2, 1, 2 ],
+            arabian_2 :                     [ 2, 2, 1, 1, 2, 2 ],
+            balinese :                      [ 1, 2, 4, 1 ],
+            byzantine :                     [ 1, 3, 1, 2, 1, 3 ],
+            chinese :                       [ 4, 2, 1, 4 ],
+            chinese_mongolian :             [ 2, 2, 3, 2, 3 ],
+            egyptian :                      [ 2, 3, 2, 3 ],
+            eight_tone_spanish :            [ 1, 2, 1, 1, 1, 2, 2 ],
+            ethiopian_araray :              [ 2, 2, 1, 2, 2, 2 ],
+            ethiopian_geeznezel :           [ 2, 1, 2, 2, 1, 2 ],
+            hawaiian :                      [ 2, 1, 2, 2, 2, 2 ],
+            hindu :                         [ 2, 2, 1, 2, 1, 2 ],
+            hirajoshi :                     [ 2, 1, 4, 1 ],
+            hungarian_major :               [ 2, 1, 2, 1, 2, 1 ],
+            hungarian_gypsy :               [ 2, 1, 3, 1, 1, 3 ],
+            hungarian_gypsy_persian :       [ 1, 3, 1, 2, 1, 3 ],
+            hungarian_minor :               [ 2, 1, 3, 1, 1, 3 ],
+            japanese_1 :                    [ 1, 4, 2, 1 ],
+            japanese_2 :                    [ 2, 3, 2, 1 ],
+            japanese_ichikosucho :          [ 2, 2, 1, 1, 1, 2, 2 ],
+            japanese_taishikicho :          [ 2, 2, 1, 1, 1, 2, 1, 1 ],
+            javaneese :                     [ 1, 2, 2, 2, 2, 1 ],
+            jewish_adonai_malakh :          [ 1, 1, 1, 2, 2, 2, 1 ],
+            jewish_ahaba_rabba :            [ 1, 3, 1, 2, 1, 2 ],
+            jewish_magen_abot :             [ 1, 2, 1, 2, 2, 2, 1 ],
+            kumoi :                         [ 2, 1, 4, 2 ],
+            mohammedan :                    [ 2, 1, 2, 2, 1, 3 ],
+            neopolitan :                    [ 1, 2, 2, 2, 1, 3 ],
+            neoploitan_major :              [ 1, 2, 2, 2, 2, 2 ],
+            neopolitan_minor :              [ 1, 2, 2, 2, 1, 2 ],
+            oriental_1 :                    [ 1, 3, 1, 1, 2, 2 ],
+            oriental_2 :                    [ 1, 3, 1, 1, 2, 1 ],
+            pelog :                         [ 1, 2, 4, 1 ],
+            persian :                       [ 1, 3, 1, 1, 2, 3 ],
+            prometheus :                    [ 2, 2, 2, 3, 1 ],
+            prometheus_neopolitan :         [ 1, 3, 2, 3, 1 ],
+            roumanian_minor :               [ 2, 1, 3, 1, 2, 1 ],
+            spanish_gypsy :                 [ 1, 3, 1, 2, 1, 2 ],
+            super_locrian :                 [ 1, 2, 1, 2, 2, 2 ],
+            chinese_2 :                     [ 2, 3, 2, 2 ],
+            hirajoshi_2 :                   [ 4, 1, 4, 2 ],
+            iwato :                         [ 1, 4, 1, 4 ],
+            japanese_in_sen :               [ 1, 4, 2, 3 ],
+            kumoi_2 :                       [ 1, 4, 2, 1 ],
+            pelog_2 :                       [ 1, 2, 4, 3 ],
+            moorish_phrygian :              [ 1, 2, 1, 1, 2, 1, 2, 1 ]
         }
-    }
+    }   
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,7 +433,7 @@ const tone =
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 settings.tuning      = tone.tuning.standard;
-settings.scale.type  = tone.scale.major;
+settings.scale.type  = tone.scale.common.major;
 // settings.scale.type  = tone.scale.blues.pentatonic;
 settings.scale.tonic = 'E';
 
@@ -280,15 +457,15 @@ window.addEventListener ( 'load',   main );
  * @param                   {array} val                 Array sequence to validate
  * @return                  {number}                    Integer representing the index where the passed array matches 
  */
-Array.prototype.indexOfArray    = function(val) 
+Array.prototype.indexOfArray    = function ( val ) 
 {
-    var index = -1;
+    let index = -1;
 
-    for (var i = 0; i < this.length; i++) 
+    for ( let i = 0; i < this.length; i++ ) 
     {
-        var pointInversion = [val[2], val[3], val[0], val[1]];                  // For lines draw in an inverted fashion
+        let pointInversion = [val[2], val[3], val[0], val[1]];                  // For lines draw in an inverted fashion
 
-        if (JSON.stringify(this[i]) === JSON.stringify(val) || JSON.stringify(this[i]) === JSON.stringify(pointInversion))
+        if ( JSON.stringify ( this[i] ) === JSON.stringify ( val ) || JSON.stringify ( this[i] ) === JSON.stringify ( pointInversion ) )
         {
             index = i;
         }
@@ -298,12 +475,64 @@ Array.prototype.indexOfArray    = function(val)
 }
 
 /**
+ * getDepth()               {Object:Method}             Returns the maximum depth of an object
+ * @return                  {number}                    Maximum depth of an object
+ */
+Object.prototype.getDepth       = function ( )
+{
+    let keys  = Object.keys ( flatten ( this ) );
+
+    let depth = keys.map ( key => key.split ( "." ).length );
+
+    return ( typeof this !== "object" || this === null ) 
+               ? 0 
+               : ( keys.length === 0 ) 
+                     ? 0
+                     : Math.max ( ...depth ) - 1;
+}
+
+/**
  * convert2digStr()         {Number:Method}             Converts the casted value into a two digit string
  * @return                  {string}                    Two digit string
  */
-Number.prototype.convert2digStr = function()
+Number.prototype.convert2digStr = function ( )
 {
-    return (this < 10) ? `0${this}` : `${this}`;
+    return ( this < 10 ) ? `0${this}` : `${this}`;
+}
+
+/**
+ * toTitleCase()            {String:Method}             Returns a title case string
+ * @return                  {string}                    Title case string
+ */
+String.prototype.toTitleCase    = function ( ) 
+{
+    return this.toLowerCase ( ).split ( ' ' ).map ( function ( word ) 
+    {
+        return ( word.charAt ( 0 ).toUpperCase( ) + word.slice( 1 ) );
+    }).join ( ' ' );
+}
+
+/**
+ * countChar()              {String:Method}             Returns count of character passed via param
+ * @param                   {string} value              Character to count
+ * @return                  {number}                    Count of character within string
+ */
+String.prototype.countChar      = function ( value )
+{
+    let count = 0;
+    let i     = this.length - 1;
+
+    while ( i >= 0 )
+    {
+        if ( this.charAt ( i ) == value )
+        {
+            count++;
+        }
+
+        i--;
+    }
+
+    return count;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -324,7 +553,7 @@ function main ( )
 
     mapFretboardNotes ( );
 
-    fretboard.notes.modes = mapModes ( );
+    // fretboard.notes.modes = mapModes ( );
 
     ////    DRAW       /////////////////////////////////////
 
@@ -350,7 +579,7 @@ function main ( )
 
     ////    DRAW       /////////////////////////////////////
 
-    drawModeOutlines  ( 1 );
+    // drawModeOutlines  ( 1 );
 
     // insertUIElements();
 }
@@ -364,15 +593,63 @@ function main ( )
  */
 function setupEnvironment ( )
 {
-    document.getElementById ( "canvas" ).width           = `${fretboard.size.width}`;
-    document.getElementById ( "canvas" ).height          = `${fretboard.size.height}`;
+    let flyout =
+    {
+        width:  document.querySelector ( ".flyout-nav ul" ).clientWidth,
+        height: document.querySelector ( ".flyout-nav ul" ).clientHeight
+    };
 
-    document.getElementById ( "canvas-underlay" ).width  = `${fretboard.size.width}`;
-    document.getElementById ( "canvas-underlay" ).height = `${fretboard.size.height}`;
+    let canvasScale =
+    {
+        width:  fretboard.size.width - flyout.width,
+        height: fretboard.partition.height * 1.35
+    };
 
-    document.getElementById ( "ui-overlay" ).style.setProperty ( 'width',  `${fretboard.size.width}px`  );
-    document.getElementById ( "ui-overlay" ).style.setProperty ( 'height', `${fretboard.size.height}px` );
+    let canvas =
+    {
+        width:  fretboard.size.width,
+        height: fretboard.size.height
+    };
 
+    let controlWrapper =
+    {
+        marginTop: ( canvasScale.height + canvas.height ),
+        height:    window.innerHeight - ( canvas.height - canvasScale.height )
+    }
+
+    ////////////////////////////////////////////////////////
+    //// CANVAS SCALE
+    document.getElementById ( "canvas-scale" ).width  = `${canvasScale.width}`;
+    document.getElementById ( "canvas-scale" ).height = `${canvasScale.height}`;
+
+    document.getElementById ( "canvas-scale" ).style.setProperty ( 'padding-left', `${flyout.width}px` );
+
+    ////////////////////////////////////////////////////////
+    //// CANVAS
+    document.getElementById ( "canvas" ).width        = `${canvas.width}`;
+    document.getElementById ( "canvas" ).height       = `${canvas.height}`;
+
+    ////////////////////////////////////////////////////////
+    //// FRETBOARD
+    document.getElementById ( "fretboard" ).style.setProperty ( 'margin-top', `${canvasScale.height}px` );
+
+    ////////////////////////////////////////////////////////
+    //// CANVAS UNDERLAY
+    document.getElementById ( "canvas-underlay" ).width  = `${canvas.width}`;
+    document.getElementById ( "canvas-underlay" ).height = `${canvas.height}`;
+
+    ////////////////////////////////////////////////////////
+    //// UI OVERLAY
+    document.getElementById ( "ui-overlay" ).style.setProperty ( 'width',  `${canvas.width}px`  );
+    document.getElementById ( "ui-overlay" ).style.setProperty ( 'height', `${canvas.height}px` );
+
+    ////////////////////////////////////////////////////////
+    //// CONTROL WRAPPER
+    document.getElementById ( "control-wrapper" ).style.setProperty ( 'margin-top', `${controlWrapper.marginTop}px` );
+    document.getElementById ( "control-wrapper" ).style.setProperty ( 'height',     `${controlWrapper.height}px` );
+
+    ////////////////////////////////////////////////////////
+    //// ANCILLARY
     document.title = config.about.Library + ' | ver: ' + config.about.Version;
 }
 
@@ -552,7 +829,7 @@ function generateNextNote ( index )
     };
 
     ////////////////////////////////////////////////////////////////////////////
-    ///     FUNCTIONS   ////////////////////////////////////////////////////////
+    ////    FUNCTIONS    ///////////////////////////////////////////////////////
 
     function getInterval ( note )
     {
@@ -592,7 +869,7 @@ function generateNextNote ( index )
         return { x, y };
     }
 
-    ///     FUNCTIONS   ////////////////////////////////////////////////////////
+    ////    FUNCTIONS    ///////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
     if ( fretboard.notes.full[index] != undefined )
@@ -778,7 +1055,7 @@ function mapFretboardNotes ( )
         for ( let i = 0; i < fretboard.maxStrings; i++ )
         {
             fretboard.notes.strings.push ( new Array ( ) );
-        }    
+        }
 
         do
         {
@@ -809,172 +1086,6 @@ function mapFretboardNotes ( )
 
     parseFull2Clean   ( );
     parseFull2Strings ( );
-}
-
-/**
- * mapModes()               {Method}                Map all available modes
- * @return                  {Object}                Mapped modes
- */
-function mapModes ( )
-{
-    let result    = Array ( );
-    let mode      = Array ( );
-    let strings   = fretboard.notes.strings;
-    let modeIndex = 0;
-    let modeMax   = settings.scale.notes.length;
-    
-    let finalFret = undefined;
-
-    ////////////////////////////////////////////////////////////////////////////
-    ///     FUNCTIONS   ////////////////////////////////////////////////////////
-    
-    function setStartingNotes ( modeIndex )
-    {
-        let index   = 0;
-
-        do
-        {  
-            mode.push ( new Array ( strings[index][modeIndex] ) );
-
-            index++;
-        }
-        while ( index < fretboard.maxStrings );
-    }
-
-    function bundleMode ( )
-    {
-        let result = Array ( );
-
-        mode.forEach ( ( element ) => 
-        {
-            element.forEach ( ( element ) => 
-            {
-                result.push ( element );
-            });
-        } );
-
-        mode.length = 0;            // Reset: mode array
-
-        return result;
-    }
-
-    function getBoundingBox ( )
-    {
-        let result = [ mode[0][0].details.fret - 1, 0 ];
-
-        for ( let i = 0; i < mode.length; i++ )
-        {
-            for ( let j = 0; j < mode[i].length; j++ )
-            {
-                if ( mode[i][j].details.fret > result[1] )
-                {
-                    result[1] = mode[i][j].details.fret;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    function getNoteIndexFromString ( note, string )
-    {
-        let result = undefined;
-
-        for ( let j = 0; j < string.length; j++ )
-        {
-            if ( string[j].note == note.note )
-            {
-                result = j;
-
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    ///     FUNCTIONS   ////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    let cycle = 0;
-    let run   = true;
-
-    do
-    {
-        setStartingNotes ( modeIndex );
-
-        do
-        {
-            modeGeneration:
-            for ( let i = 0; i < mode.length; i++ )
-            {
-                let root       = mode[i][mode[i].length - 1];
-
-                let nextIndex  = strings[i].indexOf ( root ) + 1;
-
-                let next       = strings[i][nextIndex];
-
-                let nextString = ( root.details.string < fretboard.maxStrings ) 
-                                     ? root.details.string
-                                     : 0;
-
-                let nextNext   = mode[nextString][0];
-
-                ////////////////////////////////////////////////////////////////////////////////////
-
-                if ( root.details.string == fretboard.maxStrings )
-                {
-                    finalFret = mode[0][mode[0].length - 1].details.fret;
-                }
-
-                if ( next.note != nextNext.note && root.details.fret != fretboard.maxStrings )
-                {
-                    if ( root.details.fret == finalFret && root.details.string == fretboard.maxStrings )    // END OF MODE !!!
-                    {
-                        run = false;
-
-                        break;
-                    }
-
-                    let searchIndex = getNoteIndexFromString ( next, strings[nextString] );
-
-                    for ( let j = searchIndex; j >= 0; j-- )
-                    {
-                        let note = strings[nextString][j];
-                        let box  = getBoundingBox ( );
-
-                        if ( note.note == next.note && note.details.fret >= box[0] && note.details.fret <= box[1] - 1 )
-                        {
-                            mode[nextString].unshift ( note );
-                            
-                            continue modeGeneration;
-                        }
-                    }
-
-                    mode[i].push ( next );
-                }
-                else
-                {
-                    continue;
-                }
-            }
-
-            cycle++;
-        }
-        while ( run && cycle < 4 );
-
-        result.push ( bundleMode ( ) );
-
-        // RESET
-        finalFret = undefined;
-        cycle     = 0;
-        run       = true;
-        
-        modeIndex++;    
-    }
-    while ( modeIndex < 3 );        // modeMax goes here once complete
-
-    return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1224,249 +1335,3 @@ function drawFretboardFrets ( frets = [ 12 ], color = '170, 170, 170' )
         }
     }
 }
-
-/**
- * drawFingerBoundingBox()  {Method}                    Draws a bounding box for fingering optimization
- * @param                   {number} start              Fret to start at
- */
-function drawFingerBoundingBox ( start )
-{
-    let alpha = 0.1;
-
-    for ( let i = start; i < fretboard.maxFingerspan; i++ )
-    {        
-        drawRectangle ( 
-            fretboard.partition.width  * i,                                     // x
-            0,                                                                  // y
-            fretboard.partition.width,                                          // width
-            fretboard.partition.height * fretboard.maxStrings,                  // height
-            {
-                color: colors.name.yellow,                                      // stroke.color
-                alpha: 1,                                                       // stroke.alpha
-                width: 3                                                        // stroke.width
-            },                               
-            {
-                color: colors.name.yellow,                                      // fill.color
-                alpha: alpha,                                                   // fill.alpha
-            }
-        );
-
-        alpha += 0.1;
-    }
-}
-
-/**
- * drawFingering()          {Method}                Draws lines between each mode's fingering
- * @param                   {number} modeNo         Mode(s) to display
- */
-function drawFingering ( modeNo )
-{
-    let modeOutline = fretboard.fingering.notes;
-    let start       = modeNo - 1;
-
-    if ( modeNo == 0 )
-    {
-        start  = 0;
-        modeNo = modeOutline.length;
-    }
-
-    for ( let i = start; i < modeNo; i++ )
-    {
-        for ( let j = 0; j < ( modeOutline[i].length - 1 ); j++ )
-        {
-            drawLine ( 
-                modeOutline[i][  j  ].details.x,                                // xStart
-                modeOutline[i][j + 1].details.x,                                // xEnd
-                modeOutline[i][  j  ].details.y,                                // yStart
-                modeOutline[i][j + 1].details.y,                                // yEnd
-                10,                                                             // lineWidth
-                colors.boxes[i],                                                // strokeColor
-                1                                                               // strokeAlpha
-            );
-        }
-    }
-}
-
-/**
- * drawModeOutlines()       {Method}                Draws lines around each mode's fingering
- * @param                   {number} modeNo         Mode(s) to display
- */
-function drawModeOutlines ( modeNo )
-{
-    let modeOutline = fretboard.notes.modes;
-    let increment   = 1;
-    let start       = modeNo - 1;
-
-    if ( modeNo == 0 )
-    {
-        start  = 0;
-        modeNo = modeOutline.length;
-    }
-
-    let temp = 
-    [ 
-        [],     // Left  side
-        []      // Right side
-    ];
-
-    let index =
-    {
-        left:  undefined,
-        right: undefined
-    }
-
-        temp[0].push ( modeOutline[start][0] );             // Set: initial starting note
-        temp[1].push ( modeOutline[start][0] );             // Set: initial starting note
-
-    for ( let i = start; i < modeNo; i++ )                                                          // Identify parameter
-    {
-        for ( let j = 1; j < modeOutline[i].length; j++ )
-        {
-                index.left  = temp[0].length - 1;
-                index.right = temp[1].length - 1;
-
-            if ( modeOutline[i][j].details.string > temp[0][index.left].details.string )
-            {
-                temp[0].push ( modeOutline[i][  j  ] );
-                temp[1].push ( modeOutline[i][j - 1] );
-            }
-            
-            if ( j == modeOutline[i].length - 1 )
-            {
-                temp[0].push ( modeOutline[i][j] );
-                temp[1].push ( modeOutline[i][j] );
-            }
-        }      
-    }
-
-    for ( let i = 0; i < temp.length; i++ )                                                         // Draw parameter
-    {
-        for ( let j = 0; j < ( temp[i].length - 1 ); j++ )
-        {
-            drawLine ( 
-                temp[i][  j  ].details.coordinates.x,                           // xStart
-                temp[i][j + 1].details.coordinates.x,                           // xEnd
-                temp[i][  j  ].details.coordinates.y,                           // yStart
-                temp[i][j + 1].details.coordinates.y,                           // yEnd
-                10,                                                             // lineWidth
-                colors.boxes[start],                                            // strokeColor
-                1                                                               // strokeAlpha
-            );
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////                            GENERIC UI ALGORITHMS                                   ////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * insertHtmlContent()      {Method}                    Insert HTML content in accordance with the window ID passed
- * @param                   {string} windowId           Window to populate HTML content
- */
-function insertHtmlContent ( windowId )
-{
-    switch ( windowId )
-    {
-        case 'about':
-
-            if ( !config.windows.about )
-            {
-                document.getElementById ( 'content' ).innerHTML +=
-                    `<div id="program-name"><b>Program:</b> ${config.about.Library}</div>`
-                    + `<div id="version-number"><b>Version:</b> ${config.about.Version}</div>`
-                    + `<div id="updated-last"><b>Updated:</b> ${config.about.Updated}</div>`
-                    + `<div id="about-copyright">${config.about.Copyright}, all rights reserved</div>`;
-
-                config.windows.about = true; 
-            }
-
-            break;
-
-        case 'properties':
-
-            if ( !config.windows.properties )
-            {
-                config.windows.properties = true; 
-            }
-
-            break;
-
-        default:
-
-            console.log(`${windowId} is not supported by the insertHtmlContent() function!`);
-            
-            break;
-    }
-}
-
-/**
- * showWindow()             {Method}                    Display the window that's passed via it's windowId param
- * @param                   {string} windowId           Window to populate HTML content
- * @param                   {string} align              How the window should be aligned against the main window
- */
-function showWindow ( windowId, align = 'center' )
-{
-    let element = document.getElementById(`${windowId}-window`);
-
-    ( element.style.display == 'none' )
-        ? setElementsPosition ( )
-        : element.style.setProperty ( 'display', 'none' );
-
-    function setElementsPosition ( )
-    {
-        element.style.setProperty ( 'display', 'block' );
-
-        switch ( align )
-        {
-            case 'top':
-
-                element.style.setProperty ( 'margin-left', `${( config.domWindow.width  - parseInt ( element.style.width  ) ) / 2}px` );
-                element.style.setProperty ( 'margin-top',  '0px' );
-
-                break;
-
-            case 'right':
-
-                element.style.setProperty ( 'margin-left', `${( config.domWindow.width  - parseInt ( element.style.width  ) )}px` );
-                element.style.setProperty ( 'margin-top',  `${( config.domWindow.height - parseInt ( element.style.height ) ) / 2}px` );
-
-                break;
-
-            case 'bottom':
-
-                element.style.setProperty ( 'margin-left', `${( config.domWindow.width  - parseInt ( element.style.width  ) ) / 2}px` );
-                element.style.setProperty ( 'margin-top',  `${( config.domWindow.height - parseInt ( element.style.height ) )}px` );
-
-                break;
-
-            case 'left':
-
-                element.style.setProperty ( 'margin-left', '0px' );
-                element.style.setProperty ( 'margin-top',  `${( config.domWindow.height - parseInt ( element.style.height ) ) / 2}px` );
-
-                break;
-
-            case 'center':
-
-                element.style.setProperty ( 'margin-left', `${( config.domWindow.width  - parseInt ( element.style.width  ) ) / 2}px` );
-                element.style.setProperty ( 'margin-top',  `${( config.domWindow.height - parseInt ( element.style.height ) ) / 2}px` );
-
-                break;
-        }
-    }
-
-    insertHtmlContent ( windowId );
-}
-
-////////        UI Listeners        ////////
-
-document.getElementById ( 'clear-canvas' ).addEventListener ( "click", function ( )
-{
-    clearCanvas ( );
-});
-
-document.getElementById ( 'about' ).addEventListener ( "click", function ( )
-{
-    showWindow ( 'about' );
-});

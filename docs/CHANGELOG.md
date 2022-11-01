@@ -1,6 +1,31 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.57] - 2022-11-01
+### Added
+- Object.prototype.getDepth() to return the maximum depth of an object
+- String.prototype.toTitleCase() to return a title case string
+- String.prototype.countChar() to return count of character passed via param
+- dynamic sizing of various DOM elements added to setupEnvironment()
+- populateMenu() to populate the 'flyout' menu with the object passed
+- trimObject() to trim the maximum values (rtl) of the object passed
+- createComboBox() to create an input control (combo box) based on the passed object
+- added flatten.js to assist in menu generation
+- added canvas2svg.js to assist in future SVG generation
+- added jquery-3.2.1.slim.min.js for base jquery functionality
+- added popper-1.12.9.min.js for menu functionality
+
+### Changed
+- moved insertHtmlContent() to ui-controls.js
+- moved showWindow() to ui-controls.js
+- moved UI Listeners to ui-controls.js
+
+### Removed
+- removed mapModes() function
+- removed drawFingerBoundingBox() function
+- removed drawFingering() function
+- removed drawModeOutlines() function
+
 ## [1.4.43] - 2022-10-02
 ### Changed
 - expanded fretboard to 24 frets
@@ -84,7 +109,9 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.4.43]: 2022-10-02 [CURRENT REVISION]
+[1.5.57]: 2022-11-01 [CURRENT REVISION]
+
+[1.4.43]: 2022-10-02 [6d23501](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/6d23501) optimized core algorithms to locate individual modes
 
 [1.3.36]: 2022-09-26 [4933e69](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/4933e69) general refactoring
 

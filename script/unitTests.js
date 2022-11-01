@@ -131,9 +131,81 @@ const testValues =
                 'G'
             ]
         }    
+    },
+    menus : 
+    {
+        control01 : 1,
+        control02 : 2,
+        one :
+        {
+            control01 : 1,
+            control02 : 2,
+            control03 : 3
+        },
+        two :
+        {
+            menu01 :
+            {
+                control01 : 1,
+                control02 : 2,
+                control03 : 3
+            },
+            menu02 :
+            {
+                control01 : 1,
+                control02 : 2
+            },
+            menu03 :
+            {
+                control01 : 1
+            }
+        },
+        three :
+        {
+            menu01 :
+            {
+                menu01 : 
+                {
+                    control01 : 1,
+                    control02 : 2,
+                    control03 : 3
+                }
+            },
+            menu02 :
+            {
+                control01 : 1,
+                control02 : 2,
+                control03 : 3
+            },
+            control01 : 3
+        },
+        four :
+        {
+            menu01 :
+            {
+                menu01 : 
+                {
+                    menu01 :
+                    {
+                        control01 : 1,
+                        control02 : 2,
+                        control03 : 3
+                    }
+                }
+            },
+            control01 : 2,
+            menu03 : 
+            {
+                menu01 :
+                {
+                    control01 : 1,
+                    control02 : 2,
+                    control03 : 3
+                }
+            }
+        }
     }
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////                            TESTS                                                   ////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,3 +236,11 @@ Object.entries ( testValues.scales.major ).forEach ( ( element, index ) =>
 } );
 
 console.groupEnd ( );
+
+// console.group ( 'MENUS' );
+
+// populateMenu ( 'Scale', trimObject ( testValues.menus, 2 ) );
+
+// populateMenu ( 'Scale', trimObject ( tone.scale, 2 ) );
+
+// console.groupEnd ( );
