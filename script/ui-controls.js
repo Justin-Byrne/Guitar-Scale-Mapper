@@ -40,10 +40,10 @@ function populateMenu ( title, object )
     {
         return `<!-- ${title} -->` +
                `<li class="has-children">` +
-                   `<a href="#">` +
-                       `<label class="label" for="${title}-settings">${title.toTitleCase ( )}</label>` +
-                   `</a>` +
-                `<ul>`;
+                    `<a href="#">` +
+                        `<label class="label" for="${title}-settings">${title.toTitleCase ( )}</label>` +
+                    `</a>` +
+                    `<ul>`;
     }
 
     /**
@@ -57,10 +57,10 @@ function populateMenu ( title, object )
 
         return `<!-- ${title}-${key} -->` +
                `<li class="has-children">` +
-                   `<a href="#">` +
-                       `<label class="label" for="${title}-${key}">${key.toTitleCase ( )}</label>` +
-                   `</a>` +
-                   `<ul>`;
+                    `<a href="#">` +
+                        `<label class="label" for="${title}-${key}">${key.toTitleCase ( )}</label>` +
+                    `</a>` +
+                    `<ul>`;
     }
 
     /**
@@ -76,7 +76,7 @@ function populateMenu ( title, object )
         {
             for ( let i = 0; i < depth; i++ )
             {
-                result += '</li></ul>';
+                result += '</ul></li>';
             }
         }
 
@@ -91,6 +91,10 @@ function populateMenu ( title, object )
      */
     function createControl ( key, head = undefined )
     {
+        let controlTitle = ( key.includes ( '_') )
+                               ? key.replace ( /_/g, ' ' )
+                               : key
+
         let header = ( head != undefined )
                          ? `${title}-${head}`
                          : title;
@@ -100,10 +104,10 @@ function populateMenu ( title, object )
 
         return `<!-- ${header}-${key} -->` +
                `<li>` +
-                   `<a href="#">` +
-                       `<input type="checkbox" id="${header}-${key}-checkbox" class="${header}-${key}-settings">` +
-                       `<label class="label" for="${header}-${key}-checkbox">${key.toTitleCase ( )}</label>` +
-                   `</a>` +
+                    `<a href="#">` +
+                        `<input type="checkbox" id="${header}-${key}-checkbox" class="${header}-control" value='${header}-${key}'>` +
+                        `<label class="label" for="${header}-${key}-checkbox">${controlTitle.toTitleCase ( )}</label>` +
+                    `</a>` +
                `</li>`;
     }
 
@@ -134,8 +138,80 @@ function populateMenu ( title, object )
                    : undefined; 
     }
 
+    let persistentLevel = 0;
+    let lastMenu        = undefined;
+    let columns         = 2;
+
+    function createMenuItem ( menuType, key, thisDepth, level, prevLevel, checkMenuEnd = false )
+    {
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////    MENU END    ////////////////////////////////////////////////////////////////////////
+
+        if ( checkMenuEnd )
+        {
+            ( prevLevel > level )
+                ? subMenu.push ( endMenu ( prevLevel - level ) )
+                : String.empy;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////    PERSISTANCE    /////////////////////////////////////////////////////////////////////
+
+        ( prevLevel == level )
+            ? persistentLevel++
+            : [ persistentLevel, columns ] = [ 0, 2 ];
+
+        if ( persistentLevel >= 12 )
+        {
+            let index = subMenu.indexOf ( lastMenu );
+
+            let menu  = ( columns < 3 )
+                            ? subMenu[index].replace ( '<ul>', `<ul style="columns: ${columns};">` )
+                            : subMenu[index].replace ( `<ul style="columns: ${columns - 1};">`, `<ul style="columns: ${columns};">` );
+
+                subMenu[index] = lastMenu = menu;
+
+                [ persistentLevel, columns ] = [ 0, columns + 1 ]
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////    MENU    ////////////////////////////////////////////////////////////////////////////
+
+        let HTML     = ( menuType == 'menu' )
+                           ? startMenu     ( key )
+                           : createControl ( key );
+
+            lastMenu = ( /<li\sclass=\"has-children\">/.test ( HTML ) ) // Check: for last menu
+                           ? HTML
+                           : lastMenu;
+
+        // let head = ( lastMenu != undefined ) 
+        //                ? /<!--\sscale-(?<result>[^\s]+)\s-->/.exec ( lastMenu )[1]
+        //                : undefined;
+
+        // console.log ( temp );
+
+        // stopJS ( );
+
+        // if ( HTML.includes ( 'scale-two' ) )
+        // {
+        //     console.log ( HTML );
+
+        //     stopJS ( );
+        // }
+
+            subMenu.push ( HTML );
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////    MISC    ////////////////////////////////////////////////////////////////////////////
+
+            lastLevel = ( thisDepth > 0 )
+                            ? level
+                            : lastLevel;
+    }
+
     ////    FUNCTIONS    ///////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////   
 
     let keys      = Object.keys ( flatten ( object ) );
     let subMenu   = new Array ( );
@@ -148,18 +224,18 @@ function populateMenu ( title, object )
         let prevDepth  = getPseudoDepth ( keys [ count - 1 ] );
         let thisDepth  = getPseudoDepth ( keys [ count     ] );
 
-        let prevValues = splitValue    ( keys [ count - 1 ], '.' );
-        let thisValues = splitValue    ( keys [ count     ], '.' );
+        let prevValues = splitValue ( keys [ count - 1 ], '.' );
+        let thisValues = splitValue ( keys [ count     ], '.' );
 
-        let maxValue = ( thisValues != undefined )
-                           ? thisValues.length
-                           : 0; 
+        let maxValue   = ( thisValues != undefined )
+                             ? thisValues.length
+                             : 0; 
 
         if ( count == 0 || thisDepth == 0 )
         {
             if ( thisDepth == 0 )
             {
-                subMenu.push ( createControl ( key ) );
+                createMenuItem ( 'control', key, thisDepth );
             }
             else
             {
@@ -168,23 +244,9 @@ function populateMenu ( title, object )
                     let thisValue = thisValues[i];
                     let level     = i + 1;
 
-                    if ( i != ( maxValue - 1 ) )
-                    {
-                        subMenu.push ( startMenu ( thisValue ) );
-
-                        lastLevel = level;
-                    }
-                    else
-                    {
-                        if ( lastLevel > level )
-                        {
-                            subMenu.push ( endMenu ( lastLevel - level ) );
-                        }
-
-                        subMenu.push ( createControl ( thisValue ) );
-
-                        lastLevel = level;
-                    }
+                    ( i != ( maxValue - 1 ) )
+                        ? createMenuItem ( 'menu',    thisValue, thisDepth, level, lastLevel       )
+                        : createMenuItem ( 'control', thisValue, thisDepth, level, lastLevel, true );
                 }
             }
         }
@@ -197,23 +259,14 @@ function populateMenu ( title, object )
 
                 if ( prevDepth == 0 && i == 0 )
                 {
-                    subMenu.push ( startMenu ( thisValue ) );
-
-                    lastLevel = level;
+                    createMenuItem ( 'menu', thisValue, thisDepth, level, lastLevel );
 
                     continue;
                 }
 
                 if ( i == ( maxValue - 1 ) )
                 {
-                    if ( lastLevel > level )
-                    {
-                        subMenu.push ( endMenu ( lastLevel - level ) );
-                    }
-
-                    subMenu.push ( createControl ( thisValue ) );
-
-                    lastLevel = level;
+                    createMenuItem ( 'control', thisValue, thisDepth, level, lastLevel, true );
                 }
                 else
                 {
@@ -225,14 +278,7 @@ function populateMenu ( title, object )
                     }
                     else
                     {
-                        if ( lastLevel > level )
-                        {
-                            subMenu.push ( endMenu ( lastLevel - level ) );
-                        }
-
-                        subMenu.push ( startMenu ( thisValue ) );
-
-                        lastLevel = level;
+                        createMenuItem ( 'menu', thisValue, thisDepth, level, lastLevel, true );
                     }
                 }
             }
@@ -245,11 +291,15 @@ function populateMenu ( title, object )
     
     subMenu.unshift ( getMenuMaster ( ) );
     
-    subMenu.push    ( endMenu ( 1 ) );
+    // subMenu.push    ( endMenu ( 1 ) );
 
     ////    RESULT   ///////////////////////////////////////////////////////////
 
-    mainMenu.innerHTML = subMenu.join ( '' ) + temp;
+    console.log ( subMenu.join ( '' ) );
+
+    mainMenu.innerHTML = subMenu.join ( '' ) + temp + '</li>';
+
+    // console.log ( mainMenu.innerHTML );    
 }
 
 /**
@@ -457,6 +507,17 @@ function showWindow ( windowId, align = 'center' )
 }
 
 ////////        UI Listeners        ////////
+
+// for (var i = 0; i <= inputArray.settings.class.length - 1; i++)
+// {
+//     document.querySelectorAll(inputArray.settings.class[i]).forEach(item =>
+//     {
+//         item.addEventListener('click', event =>
+//         {
+//             setSettings(item);
+//         });
+//     });
+// }
 
 document.getElementById ( 'clear-canvas' ).addEventListener ( "click", function ( )
 {

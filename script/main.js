@@ -71,8 +71,8 @@ const config =
     }
 }
 
-config.about.Updated = 'November, 01 2022';
-config.about.Version = '1.5.57';
+config.about.Updated = 'November, 03 2022';
+config.about.Version = '1.5.58';
 
 const colors =
 {
@@ -533,6 +533,18 @@ String.prototype.countChar      = function ( value )
     }
 
     return count;
+}
+
+String.prototype.splitValue     = function ( delimiter )
+{
+    return ( this.includes ( delimiter ) ) 
+               ? this.split ( delimiter )
+               : undefined;
+}
+
+function stopJS ( )
+{
+    throw new Error ( 'STOP' );    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

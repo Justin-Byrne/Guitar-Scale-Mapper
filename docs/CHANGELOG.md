@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.58] - 2022-11-03
+### Changes
+- refactored populateMenu() to include 'flyout menu' columns support 
+
 ## [1.5.57] - 2022-11-01
 ### Added
 - Object.prototype.getDepth() to return the maximum depth of an object
@@ -109,7 +113,9 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.5.57]: 2022-11-01 [CURRENT REVISION]
+[1.5.58]: 2022-11-03 [CURRENT REVISION]
+
+[1.5.57]: 2022-11-01 [d9caf51](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/d9caf51) implemented dynamic flyout menu functionality; general refactoring
 
 [1.4.43]: 2022-10-02 [6d23501](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/6d23501) optimized core algorithms to locate individual modes
 

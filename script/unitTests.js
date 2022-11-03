@@ -239,7 +239,7 @@ console.groupEnd ( );
 
 // console.group ( 'MENUS' );
 
-// populateMenu ( 'Scale', trimObject ( testValues.menus, 2 ) );
+populateMenu ( 'Scale', testValues.menus );
 
 // populateMenu ( 'Scale', trimObject ( tone.scale, 2 ) );
 

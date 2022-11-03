@@ -25,12 +25,13 @@ body {
     border-radius: 3px; }
   .flyout-nav li {
     position: relative;
-    display: block; }
+    display: block;
+    white-space: nowrap; }
     .flyout-nav li a {
       text-decoration: none;
       color: #333;
       position: relative;
-      display: table;
+      display: inline-box;
       width: 100%; }
       .flyout-nav li a .label,
       .flyout-nav li a .shortcut {

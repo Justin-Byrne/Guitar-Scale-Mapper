@@ -63,7 +63,7 @@ body
     {
         position: relative;
         display: block;
-
+        white-space: nowrap;
 
         // the menu items - text, shortcut info and hover effect (blue bg)
         a 
@@ -71,7 +71,7 @@ body
             text-decoration: none;
             color: $menu-text-color;
             position: relative;
-            display: table;
+            display: inline-box;
             width: 100%;
 
             .label,
@@ -100,7 +100,8 @@ body
 
             input[type='checkbox']:checked + .label 
             {
-                &::before {
+                &::before 
+                {
                     content: '✔️';
                     position: absolute;
                     top: 0;
@@ -135,8 +136,8 @@ body
         // the separator item
         &.separator 
         {
-            margin-bottom: $menu-top-padding;
-            border-bottom: $menu-border-width solid $menu-separator;
+            margin-bottom:  $menu-top-padding;
+            border-bottom:  $menu-border-width solid $menu-separator;
             padding-bottom: $menu-top-padding;
         }
 
