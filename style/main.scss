@@ -71,7 +71,7 @@ body
             text-decoration: none;
             color: $menu-text-color;
             position: relative;
-            display: inline-box;
+            display: inline-flex;
             width: 100%;
 
             .label,
@@ -434,4 +434,11 @@ a
     margin: 0.5rem 0;
     overflow: hidden;
     border-top: 1px solid #e9ecef;
+}
+
+// MISC
+
+#menu-test_menu 
+{
+    display: none;
 }

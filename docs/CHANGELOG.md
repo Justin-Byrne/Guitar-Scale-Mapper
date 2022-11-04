@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.60] - 2022-11-04
+### Added
+- requireJS() to load and execute JavaScript file
+
+### Changes
+- refactored populateMenu() to optimize core processes
+
 ## [1.5.58] - 2022-11-03
 ### Changes
 - refactored populateMenu() to include 'flyout menu' columns support 
@@ -113,7 +120,9 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.5.58]: 2022-11-03 [CURRENT REVISION]
+[1.5.60]: 2022-11-04 [CURRENT REVISION]
+
+[1.5.58]: 2022-11-03 [aaf9e22](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/aaf9e22) refactored populateMenu() to include 'flyout menu' columns support
 
 [1.5.57]: 2022-11-01 [d9caf51](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/d9caf51) implemented dynamic flyout menu functionality; general refactoring
 

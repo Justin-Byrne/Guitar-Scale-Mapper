@@ -31,7 +31,7 @@ body {
       text-decoration: none;
       color: #333;
       position: relative;
-      display: inline-box;
+      display: inline-flex;
       width: 100%; }
       .flyout-nav li a .label,
       .flyout-nav li a .shortcut {
@@ -254,5 +254,8 @@ a {
   margin: 0.5rem 0;
   overflow: hidden;
   border-top: 1px solid #e9ecef; }
+
+#menu-test_menu {
+  display: none; }
 
 /*# sourceMappingURL=main.css.map */

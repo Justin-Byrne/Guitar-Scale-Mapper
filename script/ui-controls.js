@@ -2,6 +2,8 @@ function main ( )
 {
     populateMenu ( 'Scale', trimObject ( tone.scale, 2 ) );
 
+    // console.log ( populateMenu ( 'Tuning', trimObject ( tone.tuning, 1 ) ) );
+
     // createComboBox ( 'Tuning', tone.tuning );
     // createComboBox ( 'Tonic', tone.notes );
 }
@@ -19,97 +21,12 @@ main ();
  */
 function populateMenu ( title, object )
 {
-    let mainMenu = document.querySelector( '#settings ul' );
-
-    let temp     = mainMenu.innerHTML;
-
-    ////////////////////////////////////////////////////////////////////////////
-
-    mainMenu.innerHTML = '';
-
-    title = title.toLowerCase ( );
+    title = ( title.includes ( ' ' ) )
+                ? title.replace ( /\s/g, '_' ).toLowerCase ( )
+                : title.toLowerCase ( );
 
     ////////////////////////////////////////////////////////////////////////////
     ////    FUNCTIONS    ///////////////////////////////////////////////////////
-
-    /**
-     * getMenuMaster()          {Method}                    Returns the HTML for the master menu item
-     * @return                  {string}                    HTML for the master menu item 
-     */
-    function getMenuMaster ( )
-    {
-        return `<!-- ${title} -->` +
-               `<li class="has-children">` +
-                    `<a href="#">` +
-                        `<label class="label" for="${title}-settings">${title.toTitleCase ( )}</label>` +
-                    `</a>` +
-                    `<ul>`;
-    }
-
-    /**
-     * startMenu()              {Method}                    Returns the HTML for a menu item
-     * @param                   {string} key                Key used to denote this menu item
-     * @return                  {string}                    HTML for a menu item
-     */
-    function startMenu ( key )
-    {
-        key = key.toLowerCase   ( );
-
-        return `<!-- ${title}-${key} -->` +
-               `<li class="has-children">` +
-                    `<a href="#">` +
-                        `<label class="label" for="${title}-${key}">${key.toTitleCase ( )}</label>` +
-                    `</a>` +
-                    `<ul>`;
-    }
-
-    /**
-     * endMenu()                {Method}                    Returns closing HTML brackets of a previously embedded menu item
-     * @param                   {number} depth              Depth of the menu items to close
-     * @return                  {string}                    HTML of closing brackets
-     */
-    function endMenu ( depth )
-    {
-        let result = '';
-
-        if ( depth > 0 )
-        {
-            for ( let i = 0; i < depth; i++ )
-            {
-                result += '</ul></li>';
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * createControl()          {Method}                    Returns the HTML for a input control
-     * @param                   {string} key                Key used to denote this input control
-     * @param                   {string} head               Head used to denote this input control
-     * @return                  {string}                    HTML of an input control
-     */
-    function createControl ( key, head = undefined )
-    {
-        let controlTitle = ( key.includes ( '_') )
-                               ? key.replace ( /_/g, ' ' )
-                               : key
-
-        let header = ( head != undefined )
-                         ? `${title}-${head}`
-                         : title;
-
-            header = header.toLowerCase ( );
-            key    = key.toLowerCase    ( );
-
-        return `<!-- ${header}-${key} -->` +
-               `<li>` +
-                    `<a href="#">` +
-                        `<input type="checkbox" id="${header}-${key}-checkbox" class="${header}-control" value='${header}-${key}'>` +
-                        `<label class="label" for="${header}-${key}-checkbox">${controlTitle.toTitleCase ( )}</label>` +
-                    `</a>` +
-               `</li>`;
-    }
 
     /**
      * getPseudoDepth()         {Method}                    Returns the depth of the value passed
@@ -138,24 +55,116 @@ function populateMenu ( title, object )
                    : undefined; 
     }
 
+    /**
+     * generateMenuItem()       {Method}                    Populates the 'subMenu' array with the appropriate HTML code for the flyout menu
+     * @param                   {string} type               Menu item type
+     * @param                   {string} key                Current key to denote the item
+     * @param                   {string} head               Key of the previous menu item(s) to be perpended a control
+     * @param                   {number} depth              Present depth of the item
+     * @return                  {string}                    HTML code
+     */
+    function generateMenuItem ( type, key = undefined, head = undefined, depth = undefined )
+    {
+        let result = undefined;
+
+        switch ( type )
+        {
+            case 'master':
+
+                result = `<!-- ${title} -->` +
+                         `<li class="has-children" id="menu-${title}">` +
+                             `<a href="#">` +
+                                 `<label class="label" for="${title}-settings">${( title.includes ( '_' ) ) ? title.replace( /_/g, ' ' ).toTitleCase ( ) : title.toTitleCase ( )}</label>` +
+                             `</a>` +
+                             `<ul>`;
+
+                break;
+
+            case 'menu':
+
+                key    = key.toLowerCase   ( );
+
+                result = `<!-- ${title}-${key} -->` +
+                         `<li class="has-children">` +
+                             `<a href="#">` +
+                                 `<label class="label" for="${title}-${key}">${key.toTitleCase ( )}</label>` +
+                             `</a>` +
+                             `<ul>`;
+
+                break;
+
+            case 'menuEnd':
+
+                result = '';
+
+                if ( depth > 0 )
+                {
+                    for ( let i = 0; i < depth; i++ )
+                    {
+                        result += '</ul></li>';
+                    }
+                }
+
+                break;
+
+            case 'control':
+
+                let controlTitle = ( key.includes ( '_') ) ? key.replace ( /_/g, ' ' ) : key
+
+                let header       = ( head != undefined )   ? `${title}-${head}`        : title;
+
+                let value        = `${header}-${key}`.replace ( /\-/g, '.' );
+
+                    header = header.toLowerCase ( );
+                    key    = key.toLowerCase    ( );
+
+                    result = `<!-- ${header}-${key} -->` +
+                             `<li>` +
+                                 `<a href="#">` +
+                                     `<input type="checkbox" id="${header}-${key}-checkbox" class="${header}-control" value='${value}'>` +
+                                     `<label class="label" for="${header}-${key}-checkbox">${controlTitle.toTitleCase ( )}</label>` +
+                                 `</a>` +
+                             `</li>`;
+
+                break;
+        }
+
+        ( type == 'master' )
+            ? subMenu.unshift ( result )
+            : subMenu.push    ( result );
+
+        return result;
+    }
+
     let persistentLevel = 0;
     let lastMenu        = undefined;
     let columns         = 2;
 
-    function createMenuItem ( menuType, key, thisDepth, level, prevLevel, checkMenuEnd = false )
-    {
-        ////////////////////////////////////////////////////////////////////////////////////////////
-        ////    MENU END    ////////////////////////////////////////////////////////////////////////
+    /**
+     * createMenuItem()         {Method}                    Preps the menu item prior to creation
+     * @param                   {string} type               Menu item type
+     * @param                   {string} key                Current key to denote the item
+     * @param                   {number} depth              Present depth of the item
+     * @param                   {number} level              Level of the current item
+     * @param                   {number} prevLevel          Level of the previous item
+     */
+    function createMenuItem ( type, key, depth, level, prevLevel )
+    {   
+        ( prevLevel > level )
+            ? generateMenuItem ( 'menuEnd', undefined, undefined, prevLevel - level )
+            : String.empy;
 
-        if ( checkMenuEnd )
-        {
-            ( prevLevel > level )
-                ? subMenu.push ( endMenu ( prevLevel - level ) )
-                : String.empy;
-        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        let regex = new RegExp ( `<!--\\s${title}-(?<result>[^\\s]+) -->` );
+        
+        let head  = ( regex.test ( lastMenu ) )
+                        ? regex.exec ( lastMenu )[1]
+                        : undefined;
+
+        let HTML  = generateMenuItem ( type, key, head );
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-        ////    PERSISTANCE    /////////////////////////////////////////////////////////////////////
 
         ( prevLevel == level )
             ? persistentLevel++
@@ -174,40 +183,9 @@ function populateMenu ( title, object )
                 [ persistentLevel, columns ] = [ 0, columns + 1 ]
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////
-        ////    MENU    ////////////////////////////////////////////////////////////////////////////
+            lastMenu  = ( /<li\sclass=\"has-children\">/.test ( HTML ) ) ? HTML  : lastMenu;
 
-        let HTML     = ( menuType == 'menu' )
-                           ? startMenu     ( key )
-                           : createControl ( key );
-
-            lastMenu = ( /<li\sclass=\"has-children\">/.test ( HTML ) ) // Check: for last menu
-                           ? HTML
-                           : lastMenu;
-
-        // let head = ( lastMenu != undefined ) 
-        //                ? /<!--\sscale-(?<result>[^\s]+)\s-->/.exec ( lastMenu )[1]
-        //                : undefined;
-
-        // console.log ( temp );
-
-        // stopJS ( );
-
-        // if ( HTML.includes ( 'scale-two' ) )
-        // {
-        //     console.log ( HTML );
-
-        //     stopJS ( );
-        // }
-
-            subMenu.push ( HTML );
-
-        ////////////////////////////////////////////////////////////////////////////////////////////
-        ////    MISC    ////////////////////////////////////////////////////////////////////////////
-
-            lastLevel = ( thisDepth > 0 )
-                            ? level
-                            : lastLevel;
+            lastLevel = ( depth > 0 )                                    ? level : lastLevel;
     }
 
     ////    FUNCTIONS    ///////////////////////////////////////////////////////
@@ -221,64 +199,73 @@ function populateMenu ( title, object )
 
     for ( let key of keys )
     {
-        let prevDepth  = getPseudoDepth ( keys [ count - 1 ] );
-        let thisDepth  = getPseudoDepth ( keys [ count     ] );
-
-        let prevValues = splitValue ( keys [ count - 1 ], '.' );
-        let thisValues = splitValue ( keys [ count     ], '.' );
-
-        let maxValue   = ( thisValues != undefined )
-                             ? thisValues.length
-                             : 0; 
-
-        if ( count == 0 || thisDepth == 0 )
+        let values = 
         {
-            if ( thisDepth == 0 )
+            current:
             {
-                createMenuItem ( 'control', key, thisDepth );
+                depth:  getPseudoDepth ( keys [ count     ] ),
+                lone:   undefined,
+                all:    splitValue ( keys [ count ], '.' ),
+                length: undefined
+            },
+            previous:
+            {
+                depth:  getPseudoDepth ( keys [ count - 1 ] ),
+                lone:   undefined,
+                all:    splitValue ( keys [ count - 1 ], '.' )
+            }
+        }
+
+            values.current.length = ( values.current.all != undefined )
+                                        ? values.current.all.length
+                                        : 0;
+
+        if ( count == 0 || values.current.depth == 0 )
+        {
+            if ( values.current.depth == 0 )
+            {
+                createMenuItem ( 'control', key, values.current.depth );
             }
             else
             {
-                for ( let i = 0; i < thisValues.length; i++ )
+                for ( let i = 0; i < values.current.length; i++ )
                 {
-                    let thisValue = thisValues[i];
-                    let level     = i + 1;
+                        values.current.lone = values.current.all[i];
 
-                    ( i != ( maxValue - 1 ) )
-                        ? createMenuItem ( 'menu',    thisValue, thisDepth, level, lastLevel       )
-                        : createMenuItem ( 'control', thisValue, thisDepth, level, lastLevel, true );
+                    ( i != ( values.current.length - 1 ) )
+                        ? createMenuItem ( 'menu',    values.current.lone, values.current.depth, ( i + 1 ), lastLevel )
+                        : createMenuItem ( 'control', values.current.lone, values.current.depth, ( i + 1 ), lastLevel );
                 }
             }
         }
         else
         {
-            for ( let i = 0; i < thisValues.length; i++ )
+            for ( let i = 0; i < values.current.length; i++ )
             {   
-                let thisValue = thisValues[i];
-                let level     = i + 1;
+                    values.current.lone = values.current.all[i];
 
-                if ( prevDepth == 0 && i == 0 )
+                if ( values.previous.depth == 0 && i == 0 )
                 {
-                    createMenuItem ( 'menu', thisValue, thisDepth, level, lastLevel );
+                    createMenuItem ( 'menu', values.current.lone, values.current.depth, ( i + 1 ), lastLevel );
 
                     continue;
                 }
 
-                if ( i == ( maxValue - 1 ) )
+                if ( i == ( values.current.length - 1 ) )
                 {
-                    createMenuItem ( 'control', thisValue, thisDepth, level, lastLevel, true );
+                    createMenuItem ( 'control', values.current.lone, values.current.depth, ( i + 1 ), lastLevel );
                 }
                 else
                 {
-                    let prevValue = prevValues[i];
+                        values.previous.lone = values.previous.all[i];
 
-                    if ( thisValue == prevValue )
+                    if ( values.current.lone == values.previous.lone )
                     {
                         continue;
                     }
                     else
                     {
-                        createMenuItem ( 'menu', thisValue, thisDepth, level, lastLevel, true );
+                        createMenuItem ( 'menu', values.current.lone, values.current.depth, ( i + 1 ), lastLevel );
                     }
                 }
             }
@@ -286,20 +273,22 @@ function populateMenu ( title, object )
 
         count++;
     }
-
-    subMenu.push    ( endMenu ( lastLevel ) );
     
-    subMenu.unshift ( getMenuMaster ( ) );
+    generateMenuItem ( 'menuEnd', undefined, undefined, lastLevel );
     
-    // subMenu.push    ( endMenu ( 1 ) );
+    generateMenuItem ( 'master' );
 
     ////    RESULT   ///////////////////////////////////////////////////////////
 
-    console.log ( subMenu.join ( '' ) );
+    let mainMenu = document.querySelector( '#settings ul' );
 
-    mainMenu.innerHTML = subMenu.join ( '' ) + temp + '</li>';
+    let temp     = mainMenu.innerHTML;
 
-    // console.log ( mainMenu.innerHTML );    
+        mainMenu.innerHTML = subMenu.join ( '' ) + temp + '</li>';
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    return subMenu.join ( '' );
 }
 
 /**
@@ -310,52 +299,64 @@ function populateMenu ( title, object )
  */
 function trimObject ( object, trim )
 {
-    let temp    = new Array ( );
+    let temp        = new Array ( );
 
-    let prevKey = undefined;
+    let previousKey = undefined;
 
-    function checkRedudancy ( prevValue, currValue )
+    /**
+     * checkRedudancy()         {Method}                    Identifies whether the current value is present within the previous value 
+     * @param                   {Object} value              Key value data
+     * @param                   {number} value.current      Value of the current key
+     * @param                   {number} value.previous     Value of the present key
+     */
+    function checkRedudancy ( value = { current, previous } )   // previousValue, currentValue
     {
         let regex = '\\w+';
 
         let append = '';
 
-        for ( let i = 1; i <= prevValue.countChar ( '.' ); i++ )
+        for ( let i = 1; i <= value.previous.countChar ( '.' ); i++ )
         {
             append += '\\.\\w+';
         }
 
         regex = new RegExp ( `${regex}${append}` );
 
-        if ( regex.test ( currValue ) )
+        if ( regex.test ( value.current ) )
         {
             temp.pop ( );
         }
     }
 
+    /**
+     * trimElements()           {Method}                    Trim elements in accordance with the trim param
+     * @param                   {Object} object             Object to trim
+     * @param                   {number} trim               Value to trim against : rtl
+     * @param                   {string} rootKey            Root key
+     */
     function trimElements ( object, trim, rootKey = undefined )
     {
-        Object.entries ( object ).forEach ( ( [ key, element ] ) => 
+        Object.entries ( object ).forEach ( ( [ currentKey, element ] ) => 
         {
-            if ( key.length > trim )
+            if ( currentKey.length > trim )
             {
-                key = ( rootKey != undefined )
-                          ? `${rootKey}.${key}`
-                          : key;
+                currentKey = ( rootKey != undefined )
+                                 ? `${rootKey}.${currentKey}`
+                                 : currentKey;
             }
 
-            if ( prevKey != undefined && ( key.countChar ( '.' ) > prevKey.countChar ( '.' ) ) )
+            if ( previousKey != undefined && ( currentKey.countChar ( '.' ) > previousKey.countChar ( '.' ) ) )
             {
-                checkRedudancy ( prevKey, key );    
+                checkRedudancy ( { current: currentKey, previous: previousKey } );    
             }
 
-            temp.push ( key );
+            temp.push ( currentKey );
 
-            prevKey = key;
+            previousKey = currentKey;
 
             if ( typeof element == 'object' )
             {
-                trimElements ( element, trim, key );
+                trimElements ( element, trim, currentKey );
             }
         });
     }

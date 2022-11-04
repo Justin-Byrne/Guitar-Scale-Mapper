@@ -24,7 +24,7 @@ const config =
         xCenter: ( window.innerWidth  /  2 ),
         yCenter: ( window.innerHeight /  2 )
     },
-    debug:          false,
+    debug:          true,
     windows:
     {
         about:      false,
@@ -71,8 +71,8 @@ const config =
     }
 }
 
-config.about.Updated = 'November, 03 2022';
-config.about.Version = '1.5.58';
+config.about.Updated = 'November, 04 2022';
+config.about.Version = '1.5.60';
 
 const colors =
 {
