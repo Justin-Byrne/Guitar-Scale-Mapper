@@ -1,6 +1,43 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.6.80] - 2022-11-12
+### Added
+- added Event Listener for when the DOM content is loaded
+
+### Changes
+- migrated requireJS() to its own file: dom-tools.js
+- migrated various generic functions for obtaining music note data to: musicNote.lib.js
+- changed setupEnvironment() to setDom()
+- moved insertUIElements() & toggleCheck() to ui-controls.js
+- refactored clearCanvas()
+- refactored configuration object by migrating the colors, tone, and settings objects
+- refactored displayFretboardNotes()
+- refactored displayFretNumbers()
+- refactored displayNoteMarkers()
+- refactored displayScaleNotes()
+- refactored displayText()
+- refactored drawCircle()
+- refactored drawFretboard()
+- refactored drawFretboardFrets()
+- refactored drawLine()
+- refactored drawRectangle()
+- refactored trimObject()
+- refactored fretboard object
+- changed generateScale() to getScale()
+- changed mapFretboardNotes() to getFretboardNotes()
+
+### Removed
+- line, circle, and object default settings from configuration object
+- removed Array.prototype.indexOfArray()
+- removed Number.prototype.convert2digStr()
+- removed drawModeOutlines()
+- removed generateNote()
+- removed setNextNote()
+- removed mapOpenNotes()
+- removed parseFull2Clean()
+- removed parseFull2Strings()
+
 ## [1.5.60] - 2022-11-04
 ### Added
 - requireJS() to load and execute JavaScript file
@@ -120,7 +157,9 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.5.60]: 2022-11-04 [CURRENT REVISION]
+[1.6.80]: 2022-11-12 [CURRENT REVISION]
+
+[1.5.60]: 2022-11-04 [e5e8582](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/e5e8582) added requireJS() function, and refactored populateMenu()
 
 [1.5.58]: 2022-11-03 [aaf9e22](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/aaf9e22) refactored populateMenu() to include 'flyout menu' columns support
 
