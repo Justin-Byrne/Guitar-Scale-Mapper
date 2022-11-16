@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-////    MAIN                        ////////////////////////////////////////////////////////////////
+////    MAIN                    ////////////////////////////////////////////////////////////////////
 
     function main ( )
     {
@@ -7,13 +7,63 @@
 
         populateMenu   ( 'Tuning', object2Menu ( config.tone.tuning ) );
 
-        createComboBox ( 'Root',   config.tone.notes );
+        createComboBox ( 'Root',   config.tone.notes );   
     }
 
     main ();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-////    FUNCTIONS                   ////////////////////////////////////////////////////////////////
+////    ARROW FUNCTIONS         ////////////////////////////////////////////////////////////////////
+
+    ////    SETTERS     ////////////////////////////////////////////////////////
+    
+    /**
+     * setScrollWidth()         {Method}                    Sets the scroll width; in config.mouse.offset.x
+     */
+    const setScrollWidth = ( ) => [ config.mouse.offset.x = Math.round ( window.pageXOffset ) ]
+
+    ////    GETTERS     ////////////////////////////////////////////////////////
+
+    /**
+     * getPixelValueFromStyle() {Method}                    Returns the numeric pixel value from a specific style attribute
+     * @param                   {type} id                   DOM object identifier 
+     * @param                   {type} style                Style to inspect
+     * @return                  {number}                    Numeric value of the inspected style
+     */
+    const getPixelValueFromStyle = ( id, style ) => Number.parseFloat ( document.getElementById ( id ).style[`${style}`].match ( /[^p]+/ )[0] );
+    
+    /**
+     * getCoordinatesFromCell() {Method}                    Get coordinates of a specific note via it's cell number
+     * @param                   {type} cell                 Cell number of note
+     * @return                  {Object}                    X & Y coordinates of note
+     */
+    const getCoordinatesFromCell = ( cell )      => { for ( let note in fretboard.notes ) if ( fretboard.notes[note].cell == cell ) { return fretboard.notes[note].coordinates } }
+
+    /**
+     * getMouseCoordinates()    {Method}                    Returns the mouses current coordinates relative to its position
+     * @param                   {Object} event              Event from 'mousemove' event listener
+     * @return                  {Object}                    X & Y coordinates of mouse
+     */
+    const getMouseCoordinates   = ( event )      => ( { x: ( event.clientX + config.mouse.offset.x ) - getPixelValueFromStyle ( 'fretboard', 'marginLeft' ), y: event.clientY - getPixelValueFromStyle ( 'fretboard', 'marginTop' ) } );
+
+    /**
+     * getUiNode()              {Method}                    Returns node value from the rendered document object corresponding to a note
+     * @param                   {Object} uiElement          Object corresponding UI element
+     * @return                  {number}                    Node value
+     */
+    const getUiNode             = ( uiElement )  => uiElement.id.match ( /ui-node-(?<result>\d+)/ )[1];
+
+    ////    SPECIAL     ////////////////////////////////////////////////////////
+
+    /**
+     * toggleCheckbox()         {Method}                    Toggles whether the passed input[type='checkbox'] is checked; or not
+     * @param                   {string}  id                The input element's id
+     * @param                   {boolean} check             Overrides toggle to either 'on' or 'off'
+     */
+    const toggleCheckbox        = ( id, check )  => ( check == undefined ) ? document.getElementById ( id ).checked = ( document.getElementById ( id ).checked ) ? false : true : document.getElementById ( id ).checked = check;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////    COMPONENT FUNCTIONS     ////////////////////////////////////////////////////////////////////
 
     /**
      * populateMenu()           {Method}                    Populate the 'flyout' menu with the object passed
@@ -29,165 +79,128 @@
         ////////////////////////////////////////////////////////////////////////////
         ////    FUNCTIONS    ///////////////////////////////////////////////////////
 
-        /**
-         * getPseudoDepth()         {Method}                    Returns the depth of the value passed
-         * @param                   {string} value              Value to measure the depth of
-         * @return                  {number}                    Depth of the value passed
-         */
-        function getPseudoDepth ( value )
-        {
-            return ( value != undefined )
-                       ? ( value.match ( /\./g ) || [] ).length
-                       : undefined;
-        }
+            /**
+             * getDepth()               {Method}                    Returns the depth of the value passed
+             * @param                   {string} value              Value to measure the depth of
+             * @return                  {number}                    Depth of the value passed
+             */
+            const getDepth = ( value ) => ( value != undefined ) ? ( value.match ( /\./g ) || [] ).length : undefined;
 
-        /**
-         * splitValue()             {Method}                    Returns an array of the value split by the passed delimiter
-         * @param                   {string} value              Value to split
-         * @param                   {string} delimiter          Delimiter used to split the passed value
-         * @return                  {Array}                     Array containing each split value
-         */
-        function splitValue ( value, delimiter )
-        {
-            return ( value != undefined )
-                       ? ( value.includes ( delimiter ) ) 
-                             ? value.split ( delimiter )
-                             : undefined
-                       : undefined; 
-        }
+            /**
+             * splitValue()             {Method}                    Returns an array of the value split by the passed delimiter
+             * @param                   {string} value              Value to split
+             * @return                  {Array}                     Array containing each split value
+             */
+            const getValue = ( value ) => ( value != undefined ) ? value.splitValue ( '.' ) : undefined;
 
-        /**
-         * generateMenuItem()       {Method}                    Populates the 'subMenu' array with the appropriate HTML code for the flyout menu
-         * @param                   {string} type               Menu item type
-         * @param                   {string} key                Current key to denote the item
-         * @param                   {string} head               Key of the previous menu item(s) to be perpended a control
-         * @param                   {number} depth              Present depth of the item
-         * @return                  {string}                    HTML code
-         */
-        function generateMenuItem ( type, key = undefined, head = undefined, depth = undefined )
-        {
-            let result = undefined;
-
-            switch ( type )
+            /**
+             * generateMenuItem()       {Method}                    Populates the 'subMenu' array with the appropriate HTML code for the flyout menu
+             * @param                   {string} type               Menu item type
+             * @param                   {string} key                Current key to denote the item
+             * @param                   {string} head               Key of the previous menu item(s) to be perpended a control
+             * @param                   {number} depth              Present depth of the item
+             * @return                  {string}                    HTML code
+             */
+            function generateMenuItem ( type, key, head, depth )
             {
-                case 'master':
+                let result = undefined;
 
-                    result = `<!-- ${title} -->` +
-                             `<li class="has-children" id="menu-${title}">` +
-                                 `<a href="#">` +
-                                     `<label class="label" for="${title}-settings">${( title.includes ( '_' ) ) ? title.replace( /_/g, ' ' ).toTitleCase ( ) : title.toTitleCase ( )}</label>` +
-                                 `</a>` +
-                                 `<ul>`;
+                switch ( type )
+                {
+                    case 'master':
 
-                    break;
+                        result = `<!-- ${title} --><li class="has-children" id="menu-${title}"><a href="#"><label class="label" for="${title}-settings">${( title.includes ( '_' ) ) ? title.replace( /_/g, ' ' ).toTitleCase ( ) : title.toTitleCase ( )}</label></a><ul>`;
 
-                case 'menu':
+                        break;
 
-                    key    = key.toLowerCase   ( );
+                    case 'menu':
 
-                    result = `<!-- ${title}-${key} -->` +
-                             `<li class="has-children">` +
-                                 `<a href="#">` +
-                                     `<label class="label" for="${title}-${key}">${key.toTitleCase ( )}</label>` +
-                                 `</a>` +
-                                 `<ul>`;
+                        key    = key.toLowerCase   ( );
 
-                    break;
+                        result = `<!-- ${title}-${key} --><li class="has-children"><a href="#"><label class="label" for="${title}-${key}">${key.toTitleCase ( )}</label></a><ul>`;
 
-                case 'menuEnd':
+                        break;
 
-                    result = '';
+                    case 'menuEnd':
 
-                    if ( depth > 0 )
-                    {
-                        for ( let i = 0; i < depth; i++ )
-                        {
-                            result += '</ul></li>';
-                        }
-                    }
+                        result = '';
 
-                    break;
+                        if ( depth > 0 )
+                            for ( let i = 0; i < depth; i++ ) 
+                                result += '</ul></li>';
 
-                case 'control':
+                        break;
 
-                    let controlTitle = ( key.includes ( '_') ) ? key.replace ( /_/g, ' ' ) : key
+                    case 'control':
 
-                    let header       = ( head != undefined )   ? `${title}-${head}`        : title;
+                        let controlTitle = ( key.includes ( '_') ) ? key.replace ( /_/g, ' ' ) : key
 
-                    let value        = `${header}-${key}`.replace ( /\-/g, '.' );
+                        let header       = ( head != undefined )   ? `${title}-${head}`        : title;
 
-                        header = header.toLowerCase ( );
-                        key    = key.toLowerCase    ( );
+                        let value        = `${header}-${key}`.replace ( /\-/g, '.' );
 
-                        result = `<!-- ${header}-${key} -->` +
-                                 `<li>` +
-                                     `<a href="#">` +
-                                         `<input type="checkbox" id="${header}-${key}-checkbox" class="${header}-control" value='${value}'>` +
-                                         `<label class="label" for="${header}-${key}-checkbox">${controlTitle.toTitleCase ( )}</label>` +
-                                     `</a>` +
-                                 `</li>`;
+                            header = header.toLowerCase ( );
+                            key    = key.toLowerCase    ( );
 
-                    break;
+                            result = `<!-- ${header}-${key} --><li><a href="#"><input type="checkbox" id="${header}-${key}-checkbox" class="${header}-control" value='${value}'><label class="label" for="${header}-${key}-checkbox">${controlTitle.toTitleCase ( )}</label></a></li>`;
+
+                        break;
+                }
+
+                ( type == 'master' )
+                    ? subMenu.unshift ( result )
+                    : subMenu.push    ( result );
+
+                return result;
             }
 
-            ( type == 'master' )
-                ? subMenu.unshift ( result )
-                : subMenu.push    ( result );
+            let persistentLevel = 0;
+            let lastMenu        = undefined;
+            let columns         = 2;
 
-            return result;
-        }
+            /**
+             * createMenuItem()         {Method}                    Preps the menu item prior to creation
+             * @param                   {string} type               Menu item type
+             * @param                   {string} key                Current key to denote the item
+             * @param                   {number} depth              Present depth of the item
+             * @param                   {number} level              Level of the current item
+             * @param                   {number} prevLevel          Level of the previous item
+             */
+            function createMenuItem ( type, key, depth, level, prevLevel )
+            {   
+                ( prevLevel > level )
+                    ? generateMenuItem ( 'menuEnd', undefined, undefined, prevLevel - level )
+                    : String.empy;
 
-        let persistentLevel = 0;
-        let lastMenu        = undefined;
-        let columns         = 2;
+                ////////////////////////////////////////////////////////////////////////////////////////////
 
-        /**
-         * createMenuItem()         {Method}                    Preps the menu item prior to creation
-         * @param                   {string} type               Menu item type
-         * @param                   {string} key                Current key to denote the item
-         * @param                   {number} depth              Present depth of the item
-         * @param                   {number} level              Level of the current item
-         * @param                   {number} prevLevel          Level of the previous item
-         */
-        function createMenuItem ( type, key, depth, level, prevLevel )
-        {   
-            ( prevLevel > level )
-                ? generateMenuItem ( 'menuEnd', undefined, undefined, prevLevel - level )
-                : String.empy;
+                let regex = new RegExp ( `<!--\\s${title}-(?<result>[^\\s]+) -->` );
+                
+                let head  = ( regex.test ( lastMenu ) ) ? regex.exec ( lastMenu )[1] : undefined;
 
-            ////////////////////////////////////////////////////////////////////////////////////////////
+                let HTML  = generateMenuItem ( type, key, head );
 
-            let regex = new RegExp ( `<!--\\s${title}-(?<result>[^\\s]+) -->` );
-            
-            let head  = ( regex.test ( lastMenu ) )
-                            ? regex.exec ( lastMenu )[1]
-                            : undefined;
+                ////////////////////////////////////////////////////////////////////////////////////////////
 
-            let HTML  = generateMenuItem ( type, key, head );
+                ( prevLevel == level ) ? persistentLevel++ : [ persistentLevel, columns ] = [ 0, 2 ];
 
-            ////////////////////////////////////////////////////////////////////////////////////////////
+                if ( persistentLevel >= 12 )
+                {
+                    let index = subMenu.indexOf ( lastMenu );
 
-            ( prevLevel == level )
-                ? persistentLevel++
-                : [ persistentLevel, columns ] = [ 0, 2 ];
+                    let menu  = ( columns < 3 )
+                                    ? subMenu [ index ].replace ( '<ul>', `<ul style="columns: ${columns};">` )
+                                    : subMenu [ index ].replace ( `<ul style="columns: ${columns - 1};">`, `<ul style="columns: ${columns};">` );
 
-            if ( persistentLevel >= 12 )
-            {
-                let index = subMenu.indexOf ( lastMenu );
+                        subMenu [ index ] = lastMenu = menu;
 
-                let menu  = ( columns < 3 )
-                                ? subMenu[index].replace ( '<ul>', `<ul style="columns: ${columns};">` )
-                                : subMenu[index].replace ( `<ul style="columns: ${columns - 1};">`, `<ul style="columns: ${columns};">` );
+                        [ persistentLevel, columns ] = [ 0, columns + 1 ]
+                }
 
-                    subMenu[index] = lastMenu = menu;
+                    lastMenu  = ( /<li\sclass=\"has-children\">/.test ( HTML ) ) ? HTML  : lastMenu;
 
-                    [ persistentLevel, columns ] = [ 0, columns + 1 ]
+                    lastLevel = ( depth > 0 )                                    ? level : lastLevel;
             }
-
-                lastMenu  = ( /<li\sclass=\"has-children\">/.test ( HTML ) ) ? HTML  : lastMenu;
-
-                lastLevel = ( depth > 0 )                                    ? level : lastLevel;
-        }
 
         ////    FUNCTIONS    ///////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////   
@@ -204,22 +217,20 @@
             {
                 current:
                 {
-                    depth:  getPseudoDepth ( keys [ count     ] ),
+                    depth:  getDepth ( keys [ count ] ),
                     lone:   undefined,
-                    all:    splitValue ( keys [ count ], '.' ),
+                    all:    getValue ( keys [ count ] ),
                     length: undefined
                 },
                 previous:
                 {
-                    depth:  getPseudoDepth ( keys [ count - 1 ] ),
+                    depth:  getDepth ( keys [ count - 1 ] ),
                     lone:   undefined,
-                    all:    splitValue ( keys [ count - 1 ], '.' )
+                    all:    getValue ( keys [ count - 1 ] )
                 }
             }
 
-                values.current.length = ( values.current.all != undefined )
-                                            ? values.current.all.length
-                                            : 0;
+                values.current.length = ( values.current.all != undefined ) ? values.current.all.length : 0;
 
             if ( count == 0 || values.current.depth == 0 )
             {
@@ -279,7 +290,7 @@
             ? generateMenuItem ( 'menuEnd', undefined, undefined, lastLevel )
             : generateMenuItem ( 'menuEnd', undefined, undefined, 1 )
         
-        generateMenuItem ( 'master' );
+            generateMenuItem ( 'master' );
 
         ////    RESULT   ///////////////////////////////////////////////////////////
 
@@ -311,23 +322,18 @@
          * @param                   {number} value.current      Value of the current key
          * @param                   {number} value.previous     Value of the present key
          */
-        function checkRedudancy ( value = { current, previous } )   // previousValue, currentValue
+        function checkRedudancy ( value = { current, previous } )
         {
             let regex = '\\w+';
 
             let append = '';
 
-            for ( let i = 1; i <= value.previous.countChar ( '.' ); i++ )
-            {
+            for ( let i = 1; i <= value.previous.countChar ( '.' ); i++ ) 
                 append += '\\.\\w+';
-            }
 
             regex = new RegExp ( `${regex}${append}` );
 
-            if ( regex.test ( value.current ) )
-            {
-                temp.pop ( );
-            }
+            if ( regex.test ( value.current ) ) temp.pop ( );
         }
 
         /**
@@ -338,28 +344,21 @@
         function trimElements ( object, rootKey = undefined )
         {
             for ( let currentKey in object )
-            {
-                if ( currentKey == 'indexOfArray' || currentKey == 'getDepth' || currentKey.length < 2 )
+            {   
+                if ( currentKey.length > 2 )
                 {
-                    continue;
-                }
-                else
-                {
-                    currentKey = ( rootKey != undefined ) ? `${rootKey}.${currentKey}` : currentKey;   
-                }
+                    currentKey  = ( rootKey != undefined ) 
+                                      ? `${rootKey}.${currentKey}` : currentKey;   
 
-                if ( previousKey != undefined && ( currentKey.countChar ( '.' ) > previousKey.countChar ( '.' ) ) )
-                {
-                    checkRedudancy ( { current: currentKey, previous: previousKey } );    
-                }
+                    if ( previousKey != undefined && ( currentKey.countChar ( '.' ) > previousKey.countChar ( '.' ) ) )
+                        checkRedudancy ( { current: currentKey, previous: previousKey } );    
 
-                temp.push ( currentKey );
+                    temp.push ( currentKey );
 
-                previousKey = currentKey;
+                    previousKey = currentKey;
 
-                if ( typeof object[`${currentKey}`] == 'object' )
-                {
-                    trimElements ( object[`${currentKey}`], currentKey );
+                    if ( typeof object[`${currentKey}`] == 'object' ) 
+                        trimElements ( object[`${currentKey}`], currentKey );
                 }
             }
         }
@@ -369,12 +368,7 @@
         let result = {};
 
         for ( let key of temp )
-        {
-            if ( key.length > 2 )
-            {
-                result[`${key}`] = 0;
-            }
-        }
+            if ( key.length > 2 ) result[`${key}`] = 0;
 
         return result;
     }
@@ -407,13 +401,14 @@
             `</div><!-- .btn-group dropup -->`;
     }
 
-    function comboBoxClick ( domObject )
+    /**
+     * comboBoxClick()          {Method}                    ///// @TODO: [description] /////
+     * @param                   {object} uiElement          Object corresponding UI element
+     */
+    function comboBoxClick ( uiElement )
     {
-        console.log ( config.tone.notes[`${domObject.id}`] );
+        console.log ( config.tone.notes [ `${uiElement.id}` ] );
     }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////    GENERIC UI ALGORITHMS       ////////////////////////////////////////////////////////////////
 
     /**
      * insertHtmlContent()      {Method}                    Insert HTML content in accordance with the window ID passed
@@ -428,19 +423,37 @@
                 if ( !config.windows.about )
                 {
                     document.getElementById ( 'content' ).innerHTML +=
-                        `<div id="program-name"><b>Program:</b> ${config.about.Library}</div>`   +
-                        `<div id="version-number"><b>Version:</b> ${config.about.Version}</div>` +
-                        `<div id="updated-last"><b>Updated:</b> ${config.about.Updated}</div>`   +
+                        `<div id="program-name"><b>Program: </b>${config.about.Library}</div>`   +
+                        `<div id="version-number"><b>Version: </b>${config.about.Version}</div>` +
+                        `<div id="updated-last"><b>Updated: </b>${config.about.Updated}</div>`   +
                         `<div id="about-copyright">${config.about.Copyright}, all rights reserved</div>`;
 
-                    config.windows.about = true; 
+                    config.windows.about = true;
                 }
+
+                break;
+
+            case 'ui-overlay':
+
+                let temp           = fretboard.notes;
+
+                let mouseFunctions = `onmouseover='mouseOver ( this )' onmouseout='mouseOut ( this )' onmousedown='mouseDown ( this )' onmouseup='mouseUp ( this )'`;
+
+                let cssStyles      = `style="display: inline-block; float: left; text-align: center; line-height: ${fretboard.partition.height * 0.95}px; width: ${fretboard.partition.width}px; height: ${fretboard.partition.height}px; border-radius: ${fretboard.partition.height - 2}px; transition: box-shadow 0.75s; color: white;"`;
+                    
+                    temp.sort ( ( a, b ) =>
+                    {
+                        return ( a.string < b.string ) ? 1 : ( a.string > b.string ) ? -1 : 0;
+                    });
+
+                for ( let note of temp ) 
+                    document.getElementById ( 'ui-overlay' ).innerHTML += `<div ${cssStyles} ${mouseFunctions} id="ui-node-${note.cell}"></div>`;
 
                 break;
 
             default:
 
-                console.log(`${windowId} is not supported by the insertHtmlContent() function!`);
+                console.log ( `${windowId} is not supported by the insertHtmlContent ( ) function!` );
                 
                 break;
         }
@@ -460,45 +473,35 @@
         
             function setElementsPosition ( )
             {
-                element.style.setProperty ( 'display', 'block' );
+                let adjust =
+                {
+                    width:  undefined,
+                    height: undefined
+                }
+                
+                switch ( align )
+                {
+                    case 'left':                               adjust.width = 0;     break;
+
+                    case 'top': case 'bottom': case 'center':  adjust.width = 0.5;   break;
+
+                    case 'right':                              adjust.width = 1;     break;
+                }
 
                 switch ( align )
                 {
-                    case 'top':
+                    case 'top':                                adjust.height = 0;    break;
 
-                        element.style.setProperty ( 'margin-left', `${( config.dom.window.width  - parseInt ( element.style.width  ) ) / 2}px` );
-                        element.style.setProperty ( 'margin-top',  '0px' );
+                    case 'right': case 'left': case 'center':  adjust.height = 0.5;  break;
 
-                        break;
-
-                    case 'right':
-
-                        element.style.setProperty ( 'margin-left', `${( config.dom.window.width  - parseInt ( element.style.width  ) )}px` );
-                        element.style.setProperty ( 'margin-top',  `${( config.dom.window.height - parseInt ( element.style.height ) ) / 2}px` );
-
-                        break;
-
-                    case 'bottom':
-
-                        element.style.setProperty ( 'margin-left', `${( config.dom.window.width  - parseInt ( element.style.width  ) ) / 2}px` );
-                        element.style.setProperty ( 'margin-top',  `${( config.dom.window.height - parseInt ( element.style.height ) )}px` );
-
-                        break;
-
-                    case 'left':
-
-                        element.style.setProperty ( 'margin-left', '0px' );
-                        element.style.setProperty ( 'margin-top',  `${( config.dom.window.height - parseInt ( element.style.height ) ) / 2}px` );
-
-                        break;
-
-                    case 'center':
-
-                        element.style.setProperty ( 'margin-left', `${( config.dom.window.width  - parseInt ( element.style.width  ) ) / 2}px` );
-                        element.style.setProperty ( 'margin-top',  `${( config.dom.window.height - parseInt ( element.style.height ) ) / 2}px` );
-
-                        break;
+                    case 'bottom':                             adjust.height = 1;    break;
                 }
+
+                element.style.setProperty ( 'margin-left', `${( config.dom.window.width  - Number.parseInt ( element.style.width  ) ) * adjust.width}px` );
+
+                element.style.setProperty ( 'margin-top',  `${( config.dom.window.height - Number.parseInt ( element.style.height ) ) * adjust.height}px` );
+
+                element.style.setProperty ( 'display', 'block' );
             }
 
         ////    FUNCTIONS   ////////////////////////////////////////////////////
@@ -511,36 +514,84 @@
         insertHtmlContent ( windowId );
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////    MOUSE FUNCTIONS         ////////////////////////////////////////////////////////////////////
+
     /**
-     * toggleCheckbox()         {Method}                    Toggles whether the passed input[type='checkbox'] is checked; or not
-     * @param                   {string}  id                The input element's id
-     * @param                   {boolean} check             Overrides toggle to either 'on' or 'off'
+     * mouseOver()              {Method}                    ///// @TODO: [description] /////
+     * @param                   {type} uiElement            Object corresponding UI element
      */
-    function toggleCheckbox ( id, check = null )
+    function mouseOver ( uiElement )
     {
-        (check == null)
-            ? document.getElementById(id).checked = (document.getElementById(id).checked) 
-                ? false 
-                : true
-            : document.getElementById(id).checked = check;    
+        document.getElementById ( uiElement.id ).style.setProperty ( 'box-shadow', 'inset 0px 0px 10px 2px #fff' );
+
+        document.body.style.cursor = 'cell';
+    }
+
+    /**
+     * mouseOut()               {Method}                    ///// @TODO: [description] /////
+     * @param                   {type} uiElement            Object corresponding UI element
+     */
+    function mouseOut ( uiElement )
+    {
+        document.getElementById ( uiElement.id ).style.setProperty ( 'box-shadow', 'none' );
+
+        document.body.style.cursor = 'default';
+    }
+
+    /**
+     * mouseDown()              {Method}                    Defines the beginner of a straight line
+     * @param                   {Object} uiElement          Object corresponding UI element
+     */
+    const mouseDown = ( uiElement ) => { [ config.mouse.down, config.mouse.start] = [ true, getUiNode ( uiElement ) ] }
+
+    /**
+     * mouseUp()                {Method}                    Defines the ending of a straight line 
+     * @param                   {Object} uiElement          Object corresponding UI element
+     */
+    function mouseUp ( uiElement )
+    {
+        [ config.mouse.down, config.mouse.end ] = [ false, getUiNode ( uiElement ) ]
+
+        fretboard.lines.push ( { start: config.mouse.start, end: config.mouse.end } );
+
+        // console.warn ( fretboard.lines );
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-////    BINDINGS                    ////////////////////////////////////////////////////////////////
+////    BINDINGS                ////////////////////////////////////////////////////////////////////
 
-    document.getElementById ( 'clear-canvas' ).addEventListener ( "click", () => clearCanvas ( 1 ) );
+    /**
+     * setTimeout()             {Event}                     Loads specific UI functions after DOM is loaded
+     */
+    setTimeout ( ( ) =>
+    {
+        document.getElementById ( 'clear-canvas' ).addEventListener ( "click", () => clearCanvas ( 1 ) );
 
-    document.getElementById ( 'about' ).addEventListener ( "click", ( ) => showWindow ( 'about' ) );
+        document.getElementById ( 'about' ).addEventListener ( "click", ( ) => showWindow ( 'about' ) );
 
-////////        UI Listeners        ////////
+        insertHtmlContent ( 'ui-overlay' );
+    }, 
+    500 );
 
-// for (var i = 0; i <= inputArray.settings.class.length - 1; i++)
-// {
-//     document.querySelectorAll(inputArray.settings.class[i]).forEach(item =>
-//     {
-//         item.addEventListener('click', event =>
-//         {
-//             setSettings(item);
-//         });
-//     });
-// }
+    /**
+     * EventListener()          {Event}                     Window scroll event listener
+     */    
+    window.addEventListener ( "scroll", setScrollWidth );
+
+    /**
+     * EventListener()          {Event}                     Mouse move event listener
+     */
+    window.addEventListener ( "mousemove", function ( event ) 
+    {   
+        showSavedState ( 1 );
+
+        if ( config.mouse.down )
+        {
+            let start = getCoordinatesFromCell ( config.mouse.start );
+
+            let end   = getMouseCoordinates    ( event );
+
+            drawLine ( start.x, end.x, start.y, end.y, { type:  1, width: 5, color: config.colors.name.white, alpha: 0.8 } );
+        }
+    });

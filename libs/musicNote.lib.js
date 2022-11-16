@@ -49,19 +49,22 @@
             ////////////////////////////////////////////////////////////////////////////////////////
             ////    SETTERS     ////////////////////////////////////////////////////////////////////
 
-            _lib.setCanvas        = ( canvasId )      => { canvas = document.getElementById(`${canvasId}`) }
+            _lib.setCanvas        = ( canvasId )      => { canvas = document.getElementById ( `${canvasId}` ) }
 
             _lib.setFrets         = ( frets )         => map.max.frets;
+
             _lib.setStrings       = ( strings )       => map.max.strings;
+            
             _lib.setcolorInterval = ( ColorInterval ) => map.color.interval;
+            
             _lib.setColorDefault  = ( ColorDefault )  => map.color.default;
 
-            _lib.setSettings = ( map ) => map;
+            _lib.setSettings      = ( map )           => map;
 
             ////////////////////////////////////////////////////////////////////////////////////////
             ////    GETTERS     ////////////////////////////////////////////////////////////////////
 
-            _lib.getStringFromCell         = ( cell )                                                   => ( cell / ( config.settings.maxFrets + 1 ) ).toString ( )[0];
+            _lib.getStringFromCell         = ( cell )                                                   => Number.parseInt ( ( cell / ( config.settings.maxFrets + 1 ) ).toString ( )[0] ) + 1;
 
             _lib.getFretFromCell           = ( cell )                                                   => cell % ( config.settings.maxFrets + 1 );
 
@@ -81,7 +84,7 @@
 
             _lib.getPreviousNoteFromNote   = ( o, i = config.tone.notes.indexOf ( o.note ) )            => config.tone.notes [ ( i - 1 < 0 ) ? config.tone.notes.length - 1 : i - 1 ];
 
-            _lib.getCoordinatesFromNote    = ( o = { fret, string } )                                   => ( { x: ( fretboard.partition.width * ( o.fret ) + ( fretboard.partition.width / 2 ) ), y: - ( fretboard.partition.height * ( o.string ) - ( fretboard.size.height - fretboard.partition.height * 1.5 ) ) } );
+            _lib.getCoordinatesFromNote    = ( o = { fret, string } )                                   => ( { x: ( fretboard.partition.width * ( o.fret ) + ( fretboard.partition.width / 2 ) ), y: - ( fretboard.partition.height * ( o.string - 1 ) - ( fretboard.size.height - fretboard.partition.height * 1.5 ) ) } );
 
             ////////////////////////////////////////////////////////////////////
 

@@ -1,6 +1,35 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.90] - 2022-11-15
+### Added
+- lines array within fretboard object to save drawn lines
+- canvasSave() to save the canvas to the saveState variable
+- showSavedState() to clears the canvas, and replaces it with an image
+- setScrollWidth() to set the scroll width
+- getPixelValueFromStyle() to returns the numeric pixel value from a specific style attribute
+- getCoordinatesFromCell() to get coordinates of a specific note via it's cell number
+- getMouseCoordinates() to return the mouses current coordinates relative to its position
+- getUiNode() to returns node value from the rendered document object corresponding to a note
+- toggleCheckbox() to toggle whether the passed input[type='checkbox'] is checked
+- comboBoxClick() to handle combo box click events
+- mouseOver() to handle mouse over events for UI elements
+- mouseOut() to handle mouse out events for UI elements
+- mouseDown() to handle mouse down events for UI elements
+- mouseUp() to handle mouse up events for UI elements
+- timeout to load specific UI functions after DOM is loaded
+
+### Changes
+- modified config.mouse to include offset values
+- expanded drawLine() to include dashed lines
+- getPseudoDepth() to getDepth()
+- refactored generateMenuItem()
+- expanded insertHtmlContent() to include content for the 'ui-overlay'
+- refactored setElementsPosition()
+
+### Removed
+- removed ui-underlay
+
 ## [1.6.80] - 2022-11-12
 ### Added
 - added Event Listener for when the DOM content is loaded
@@ -157,7 +186,9 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.6.80]: 2022-11-12 [CURRENT REVISION]
+[1.7.90]: 2022-11-15 [CURRENT REVISION]
+
+[1.6.80]: 2022-11-12 [5c80247](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/5c80247) major refactoring of whole program: see changelog
 
 [1.5.60]: 2022-11-04 [e5e8582](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/e5e8582) added requireJS() function, and refactored populateMenu()
 

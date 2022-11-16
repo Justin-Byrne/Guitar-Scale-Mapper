@@ -19,8 +19,9 @@
         debug: false,
         dom:
         {
-            canvases: [ ],
-            contexts: [ ],
+            canvases:  [ ],
+            contexts:  [ ],
+            saveState: undefined,
             window: 
             {
                 width:     window.innerWidth  - 18,
@@ -35,11 +36,11 @@
         },
         mouse:
         {
-            x:      undefined,
-            y:      undefined,
             start:  undefined, 
             end:    undefined,
-            down:   false
+            down:   false,
+            extant: -1,
+            offset: { x: 0, y: 0 }
         },
         settings:
         {
@@ -280,8 +281,8 @@
     config.settings.scale.type  = config.tone.scale.common.major;
     config.settings.scale.tonic = 'E';
 
-    config.about.Updated        = 'November, 12 2022';
-    config.about.Version        = '1.6.80';
+    config.about.Updated        = 'November, 15 2022';
+    config.about.Version        = '1.7.90';
 
     ////////////////////////////////////////////////////////////////////////////
 
@@ -289,6 +290,7 @@
      * fretboard                {Object}                    Object literal variables
      * @var                     {Object} element            Instrument board
      * @var                     {Array}  notes              All available notes for the instrument
+     * @var                     {Array}  lines              Drawn lines
      * @var                     {Object} size               DOM size properties
      * @var                     {Object} partition          DOM partition size properties
      */
@@ -296,6 +298,7 @@
     {
         element: document.getElementById ( 'fretboard' ),
         notes:   [ ],
+        lines:   [ ],
         size:
         {
             width:  document.getElementById ( 'fretboard' ).clientWidth,
@@ -397,6 +400,10 @@
         displayNoteMarkers ( );
 
         displayFretNumbers ( );
+
+        ////    SAVE    ////////////////////////////////////////////////////////
+
+        canvasSave ( 1 );
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -445,9 +452,6 @@
         document.getElementById ( "canvas" ).width           = canvas.width;
         document.getElementById ( "canvas" ).height          = canvas.height;
         
-        document.getElementById ( "canvas-underlay" ).width  = canvas.width;
-        document.getElementById ( "canvas-underlay" ).height = canvas.height;
-        
         document.getElementById ( "ui-overlay" ).width       = canvas.width;
         document.getElementById ( "ui-overlay" ).height      = canvas.height
         
@@ -461,9 +465,11 @@
 
         document.getElementById ( "canvas-scale" ).style.setProperty    ( 'margin-left', `${flyout.width}px` );
         
-        document.getElementById ( "fretboard" ).style.setProperty       ( 'margin-top', `${canvasScale.height}px` );
+        document.getElementById ( "fretboard" ).style.setProperty       ( 'margin-top',  `${canvasScale.height}px` );
+
+        document.getElementById ( "fretboard" ).style.setProperty       ( 'margin-left', `40px` );
         
-        document.getElementById ( "control-wrapper" ).style.setProperty ( 'margin-top', `${controlWrapper.marginTop}px` );
+        document.getElementById ( "control-wrapper" ).style.setProperty ( 'margin-top',  `${controlWrapper.marginTop}px` );
         
         ////////////////////////////////////////////////////////////////////////
         ////    ANCILLARY   ////////////////////////////////////////////////////
@@ -564,13 +570,83 @@
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+////    SPECIAL FUNCTIONS   ////////////////////////////////////////////////////////////////////////
+
+    /**
+     * canvasSave()             {Method}                    Saves the canvas to the saveState variable
+     * @param                   {number} number             Number denoting the canvas
+     */
+    const canvasSave = ( number ) => { config.dom.saveState = config.dom.canvases [ number ].toDataURL ( ); }
+
+    /**
+     * showSavedState()         {Method}                    Clears the canvas, and replaces it with an image; from param
+     * @param                   {number} number             Number denoting the canvas
+     */
+    function showSavedState ( number )
+    {
+        clearCanvas ( number );
+
+        if ( document.getElementById ( 'saved-state' ) == null )
+        {
+            let element = document.createElement  ( 'img' );
+
+            [ element.src, element.id, element.style ] = [ config.dom.saveState, 'saved-state', 'position: absolute' ];
+
+                document.getElementById ( config.dom.canvases [ number ].id ).parentNode.insertBefore ( element, document.getElementById ( config.dom.canvases [ number ].id ).nextElementSibling );    
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 ////    GRAPHIC FUNCTIONS ( GENERIC )   ////////////////////////////////////////////////////////////
 
     /**
      * clearCanvas()            {Method}                    Clears the entire canvas element
-     * @param                   {number} number             number denoting the canvas to clear
+     * @param                   {number} number             Number denoting the canvas to clear
      */
     const clearCanvas = ( number ) => config.dom.contexts[number].clearRect ( 0, 0, config.dom.canvases[number].width, config.dom.canvases[number].height );
+
+    /**
+     * drawLine()               {Method}                    Draws a simple circle
+     * @param                   {number}  xStart            X position start
+     * @param                   {number}  xEnd              X position end
+     * @param                   {number}  yStart            Y position start
+     * @param                   {number}  yEnd              Y position end
+     * @param                   {Object}  stroke            Stroke object containing stoke properties
+     * @param                   {number}  stroke.type       Stroke type; 1 (solid) | 2 (dashed)
+     * @param                   {string}  stroke.color      Stroke RGB number set for fill; r, g, b
+     * @param                   {decimal} stroke.alpha      Stroke alpha (transparency) number value
+     * @param                   {decimal} stroke.width      Strokes width
+     * @param                   {Object}  context           2D canvas context
+     */
+    function drawLine ( xStart, xEnd, yStart, yEnd, stroke = { type: 0, color: '0, 0, 0', alpha: 1, width: 1 }, context = config.dom.contexts[1] )
+    {
+        context.strokeStyle = getRgb ( stroke.color );
+
+        context.globalAlpha = stroke.alpha;
+
+        context.lineCap     = 'round';
+
+        context.lineWidth   = stroke.width;
+
+        switch ( stroke.type )
+        {
+            case 1:   context.setLineDash ( [ 15, 15 ] );  break;
+
+            default:  context.setLineDash ( [ ] );         break;            
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+
+        context.beginPath ( );
+
+        context.moveTo    ( xStart, yStart );
+        
+        context.lineTo    ( xEnd, yEnd );
+
+        context.stroke    ( );
+
+        context.globalAlpha = 1;
+    }
 
     /**
      * drawRectangle()          {Method}                    Draws a simple rectangle
@@ -604,36 +680,6 @@
         context.stroke    ( );
 
         context.fill      ( );
-    }
-
-    /**
-     * drawLine()               {Method}                    Draws a simple circle
-     * @param                   {number}  xStart            X position start
-     * @param                   {number}  xEnd              X position end
-     * @param                   {number}  yStart            Y position start
-     * @param                   {number}  yEnd              Y position end
-     * @param                   {Object}  stroke            Stroke object containing stoke properties
-     * @param                   {string}  stroke.color      Stroke RGB number set for fill; r, g, b
-     * @param                   {decimal} stroke.width      Strokes width
-     * @param                   {Object}  context           2D canvas context
-     */
-    function drawLine ( xStart, xEnd, yStart, yEnd, stroke = { color: '0, 0, 0', width: 1 }, context = config.dom.contexts[1] )
-    {
-        context.strokeStyle = getRgb ( stroke.color );
-
-        context.lineCap     = 'square';
-
-        context.lineWidth   = stroke.width;
-
-        ////////////////////////////////////////////////////////////////////////
-
-        context.beginPath ( );
-
-        context.moveTo    ( xStart, yStart );
-        
-        context.lineTo    ( xEnd, yEnd );
-
-        context.stroke    ( );
     }
 
     /**
@@ -725,14 +771,7 @@
 
                 if ( cell % frets == true ) continue;
 
-                drawRectangle (     
-                    fretboard.partition.width  * j,         // x
-                    fretboard.partition.height * i,         // y
-                    fretboard.partition.width,              // width
-                    fretboard.partition.height,             // height
-                    undefined,                              // stroke { color, alpha, width }
-                    undefined                               // fill   { color, alpha }
-                );
+                drawRectangle ( fretboard.partition.width  * j, fretboard.partition.height * i, fretboard.partition.width, fretboard.partition.height );
             }
         }
     }
@@ -755,11 +794,11 @@
 
             ////////////////////////////////////////////////////////////////////
 
-            drawLine ( x,          x,          0, y, { color: color,                    width: lineWidth } );   // Fret
+            drawLine ( x,          x,          0, y, { type: 0, color: color,                    alpha: undefined, width: lineWidth } );   // Fret
 
-            drawLine ( x - offset, x - offset, 2, y, { color: config.colors.name.white, width: offset    } );   // Light
+            drawLine ( x - offset, x - offset, 2, y, { type: 0, color: config.colors.name.white, alpha: undefined, width: offset    } );   // Light
             
-            drawLine ( x + offset, x + offset, 2, y, { color: config.colors.name.black, width: offset    } );   // Shadow
+            drawLine ( x + offset, x + offset, 2, y, { type: 0, color: config.colors.name.black, alpha: undefined, width: offset    } );   // Shadow
         }
     }
 

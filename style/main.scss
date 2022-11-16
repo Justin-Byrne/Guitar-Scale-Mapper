@@ -188,8 +188,6 @@ body
 {
     width: 175%;
     aspect-ratio: 5 / 1;
-    margin-top: 60px;
-    margin-left: 40px;
     position: absolute;
     display: block;
     // border: 2px dashed #999;
@@ -197,9 +195,9 @@ body
 
 #ui-overlay
 {
-    display: block;
     position: absolute;
-    z-index: 1;
+    display: block;
+    z-index: 3;
 }
 
 #control-wrapper
@@ -266,6 +264,7 @@ body
     display: block;
     position: absolute;
     padding-right: 60px;
+    z-index: 2;
 }
 
 #canvas-underlay
