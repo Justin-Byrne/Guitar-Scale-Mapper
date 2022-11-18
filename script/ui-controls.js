@@ -7,7 +7,13 @@
 
         populateMenu   ( 'Tuning', object2Menu ( config.tone.tuning ) );
 
-        createComboBox ( 'Root',   config.tone.notes );   
+        createComboBox ( 'root',   config.tone.notes,     'notes' );
+        
+        createComboBox ( 'type',   [ 'solid', 'dashed' ], 'lines' );
+
+        createComboBox ( 'alpha',  [ 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1  ], 'lines' );
+
+        createComboBox ( 'Width',  [ 1, 2, 3, 4, 5, 6 ], 'lines' );
     }
 
     main ();
@@ -20,7 +26,7 @@
     /**
      * setScrollWidth()         {Method}                    Sets the scroll width; in config.mouse.offset.x
      */
-    const setScrollWidth = ( ) => [ config.mouse.offset.x = Math.round ( window.pageXOffset ) ]
+    const setScrollWidth         = ( )           => [ config.mouse.offset.x = Math.round ( window.scrollX ) ]
 
     ////    GETTERS     ////////////////////////////////////////////////////////
 
@@ -44,14 +50,14 @@
      * @param                   {Object} event              Event from 'mousemove' event listener
      * @return                  {Object}                    X & Y coordinates of mouse
      */
-    const getMouseCoordinates   = ( event )      => ( { x: ( event.clientX + config.mouse.offset.x ) - getPixelValueFromStyle ( 'fretboard', 'marginLeft' ), y: event.clientY - getPixelValueFromStyle ( 'fretboard', 'marginTop' ) } );
+    const getMouseCoordinates    = ( event )     => ( { x: ( event.clientX + config.mouse.offset.x ) - getPixelValueFromStyle ( 'fretboard', 'marginLeft' ), y: event.clientY - getPixelValueFromStyle ( 'fretboard', 'marginTop' ) } );
 
     /**
      * getUiNode()              {Method}                    Returns node value from the rendered document object corresponding to a note
      * @param                   {Object} uiElement          Object corresponding UI element
      * @return                  {number}                    Node value
      */
-    const getUiNode             = ( uiElement )  => uiElement.id.match ( /ui-node-(?<result>\d+)/ )[1];
+    const getUiNode              = ( uiElement ) => uiElement.id.match ( /ui-node-(?<result>\d+)/ )[1];
 
     ////    SPECIAL     ////////////////////////////////////////////////////////
 
@@ -60,7 +66,7 @@
      * @param                   {string}  id                The input element's id
      * @param                   {boolean} check             Overrides toggle to either 'on' or 'off'
      */
-    const toggleCheckbox        = ( id, check )  => ( check == undefined ) ? document.getElementById ( id ).checked = ( document.getElementById ( id ).checked ) ? false : true : document.getElementById ( id ).checked = check;
+    const toggleCheckbox         = ( id, check ) => ( check == undefined ) ? document.getElementById ( id ).checked = ( document.getElementById ( id ).checked ) ? false : true : document.getElementById ( id ).checked = check;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////    COMPONENT FUNCTIONS     ////////////////////////////////////////////////////////////////////
@@ -76,8 +82,8 @@
                     ? title.replace ( /\s/g, '_' ).toLowerCase ( )
                     : title.toLowerCase ( );
 
-        ////////////////////////////////////////////////////////////////////////////
-        ////    FUNCTIONS    ///////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        ////    FUNCTIONS    ///////////////////////////////////////////////////
 
             /**
              * getDepth()               {Method}                    Returns the depth of the value passed
@@ -202,8 +208,8 @@
                     lastLevel = ( depth > 0 )                                    ? level : lastLevel;
             }
 
-        ////    FUNCTIONS    ///////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////   
+        ////    FUNCTIONS    ///////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
 
         let keys      = Object.keys ( flatten ( object ) );
         let subMenu   = new Array ( );
@@ -316,52 +322,58 @@
 
         let previousKey = undefined;
 
-        /**
-         * checkRedudancy()         {Method}                    Identifies whether the current value is present within the previous value 
-         * @param                   {Object} value              Key value data
-         * @param                   {number} value.current      Value of the current key
-         * @param                   {number} value.previous     Value of the present key
-         */
-        function checkRedudancy ( value = { current, previous } )
-        {
-            let regex = '\\w+';
+        ////////////////////////////////////////////////////////////////////////
+        ////    FUNCTIONS    ///////////////////////////////////////////////////
 
-            let append = '';
+            /**
+             * checkRedudancy()         {Method}                    Identifies whether the current value is present within the previous value 
+             * @param                   {Object} value              Key value data
+             * @param                   {number} value.current      Value of the current key
+             * @param                   {number} value.previous     Value of the present key
+             */
+            function checkRedudancy ( value = { current, previous } )
+            {
+                let regex = '\\w+';
 
-            for ( let i = 1; i <= value.previous.countChar ( '.' ); i++ ) 
-                append += '\\.\\w+';
+                let append = '';
 
-            regex = new RegExp ( `${regex}${append}` );
+                for ( let i = 1; i <= value.previous.countChar ( '.' ); i++ ) 
+                    append += '\\.\\w+';
 
-            if ( regex.test ( value.current ) ) temp.pop ( );
-        }
+                regex = new RegExp ( `${regex}${append}` );
 
-        /**
-         * trimElements()           {Method}                    Trim elements to create a menu
-         * @param                   {Object} object             Object to trim
-         * @param                   {string} rootKey            Root key
-         */
-        function trimElements ( object, rootKey = undefined )
-        {
-            for ( let currentKey in object )
-            {   
-                if ( currentKey.length > 2 )
-                {
-                    currentKey  = ( rootKey != undefined ) 
-                                      ? `${rootKey}.${currentKey}` : currentKey;   
+                if ( regex.test ( value.current ) ) temp.pop ( );
+            }
 
-                    if ( previousKey != undefined && ( currentKey.countChar ( '.' ) > previousKey.countChar ( '.' ) ) )
-                        checkRedudancy ( { current: currentKey, previous: previousKey } );    
+            /**
+             * trimElements()           {Method}                    Trim elements to create a menu
+             * @param                   {Object} object             Object to trim
+             * @param                   {string} rootKey            Root key
+             */
+            function trimElements ( object, rootKey = undefined )
+            {
+                for ( let currentKey in object )
+                {   
+                    if ( currentKey.length > 2 )
+                    {
+                        currentKey  = ( rootKey != undefined ) 
+                                          ? `${rootKey}.${currentKey}` : currentKey;   
 
-                    temp.push ( currentKey );
+                        if ( previousKey != undefined && ( currentKey.countChar ( '.' ) > previousKey.countChar ( '.' ) ) )
+                            checkRedudancy ( { current: currentKey, previous: previousKey } );    
 
-                    previousKey = currentKey;
+                        temp.push ( currentKey );
 
-                    if ( typeof object[`${currentKey}`] == 'object' ) 
-                        trimElements ( object[`${currentKey}`], currentKey );
+                        previousKey = currentKey;
+
+                        if ( typeof object[`${currentKey}`] == 'object' ) 
+                            trimElements ( object[`${currentKey}`], currentKey );
+                    }
                 }
             }
-        }
+
+        ////    FUNCTIONS    ///////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
 
         trimElements ( object );
 
@@ -374,31 +386,91 @@
     }
 
     /**
-     * createComboBox           {Method}                    Creates an input control (combo box) based on the passed object
-     * @param                   {string} title              Title to be attributed to the created combo box
-     * @param                   {Object} object             Object to populate the created combo box
+     * createComboBox()         {Method}                    Creates a combo box utilizing the passed values
+     * @param                   {string} title              Title of the combo box
+     * @param                   {Array}  values             Values to populate the combo box with
+     * @param                   {string} group              Title of the combo group
      */
-    function createComboBox ( title, object )
+    function createComboBox ( title, values, group )
     {
-        let keys    = Object.keys ( object );
+        let elements    = new Array ( );
 
-        let options = '';
+        let uiContainer = document.getElementById ( 'controls' );
 
-        Object.entries ( object ).forEach ( ( [ key, value ] ) => 
+        ////////////////////////////////////////////////////////////////////////
+        ////    FUNCTIONS    ///////////////////////////////////////////////////
+
+            /**
+             * getOptions()             {Method}                Generates all combo box values with their appropriate tags
+             * @param                   {Array} values          Values to populate the combo box with
+             * @return                  {string}                Combo box values
+             */
+            function getOptions ( values )
+            {    
+                let result = '';
+
+                for ( let value in values )
+                    result += `<a id="${value}" class="dropdown-item" onclick="comboBoxClick(this)">${values[value]}</a>\n`;
+
+                return result;
+            }
+
+            /**
+             * getComboBox()            {Method}                Generates a combo box utilizing the passed values
+             * @param                   {string} title          Title of the combo box
+             * @param                   {Array}  values         Values to populate the combo box with
+             * @return                  {string}                Combo box containing passed values
+             */
+            const getComboBox = ( title, values ) => `<div class="btn-group dropup"><button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${title.toTitleCase ( )}</button><div class="dropdown-menu">${getOptions ( values )}</div></div><!-- .btn-group dropup -->`;
+
+            /**
+             * getComboGroup()          {Method}                Generates a combo group around the passed UI element
+             * @param                   {string} uiElement      Combo box to wrap within a combo group
+             * @param                   {string} group          Title for combo group
+             * @return                  {string}                Combo group containing passed UI element
+             */
+            const getComboGroup = ( uiElement, group ) => `<div id="${group}-group" class="control-group"><span class="header">${group}</span><div class="master-btn-group">${uiElement}</div></div><!-- .control-group #${group}-group -->`;
+
+            /**
+             * setUiElements()          {Method}                Appends each passed UI element as a child of the passed container
+             * @param                   {object} container      DOM container to append each UI element to
+             * @param                   {object} uiElements     UI elements
+             */
+            const setUiElements = ( container, uiElements ) => { for ( let element of uiElements ) container.appendChild ( element ) }
+
+        ////    FUNCTIONS    ///////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+
+        let comboBox    = getComboBox ( title, values );    // Create: combo box
+
+        if ( group != undefined )
         {
-            options += `<a id="${key}" class="dropdown-item" onclick="comboBoxClick(this)">${value}</a>\n`;       
-        });
+            let groupId  = `${group}-group`;
 
-        // Insert: Combo Box
-        document.getElementById ( 'controls' ).innerHTML += 
-            `<div class="btn-group dropup">` +
-                `<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">` +
-                    title +
-                `</button>` +
-                `<div class="dropdown-menu">` +
-                    `${options}` +
-                `</div>` +
-            `</div><!-- .btn-group dropup -->`;
+            if ( document.getElementById ( groupId ) == null )
+
+                comboBox = getComboGroup ( comboBox, group );                   // Wrap: combo box in combo group
+
+            else
+            {
+                for ( let child of document.getElementById ( 'controls' ).children )
+
+                    if ( child.id.includes ( groupId ) )
+                    {
+                        for ( let child of document.querySelector ( `#${groupId} .master-btn-group` ).children )
+
+                            elements.push ( '<div class="btn-group dropup">' + child.innerHTML + '</div>' );
+
+                        elements.push ( comboBox );                                                 // Push: combo box at the end of the elements' array
+
+                        uiContainer.removeChild ( uiContainer.children [ groupId ] );               // Remove: previous group
+
+                        comboBox = getComboGroup ( elements.join ( '' ), group );                   // Wrap: all elements in combo group
+                    }
+            }
+        }
+
+        setUiElements ( uiContainer, comboBox.convertToElements ( ) );
     }
 
     /**
@@ -471,6 +543,9 @@
         ////////////////////////////////////////////////////////////////////////
         ////    FUNCTIONS   ////////////////////////////////////////////////////
         
+            /**
+             * setElementsPosition()    {Method}                Sets the elements position using the align param
+             */
             function setElementsPosition ( )
             {
                 let adjust =
@@ -497,11 +572,11 @@
                     case 'bottom':                             adjust.height = 1;    break;
                 }
 
-                element.style.setProperty ( 'margin-left', `${( config.dom.window.width  - Number.parseInt ( element.style.width  ) ) * adjust.width}px` );
+                element.style.marginLeft = `${( config.dom.window.width  - Number.parseInt ( element.style.width  ) ) * adjust.width}px`;
 
-                element.style.setProperty ( 'margin-top',  `${( config.dom.window.height - Number.parseInt ( element.style.height ) ) * adjust.height}px` );
+                element.style.marginTop  = `${( config.dom.window.height - Number.parseInt ( element.style.height ) ) * adjust.height}px`;
 
-                element.style.setProperty ( 'display', 'block' );
+                element.style.display    = 'block';
             }
 
         ////    FUNCTIONS   ////////////////////////////////////////////////////
@@ -509,7 +584,7 @@
 
         ( element.style.display === 'none' ) 
             ? setElementsPosition ( ) 
-            : element.style.setProperty ( 'display', 'none' );
+            : element.style.display = 'none';
 
         insertHtmlContent ( windowId );
     }
@@ -532,7 +607,7 @@
      * mouseOut()               {Method}                    ///// @TODO: [description] /////
      * @param                   {type} uiElement            Object corresponding UI element
      */
-    function mouseOut ( uiElement )
+    function mouseOut  ( uiElement )
     {
         document.getElementById ( uiElement.id ).style.setProperty ( 'box-shadow', 'none' );
 
@@ -543,19 +618,24 @@
      * mouseDown()              {Method}                    Defines the beginner of a straight line
      * @param                   {Object} uiElement          Object corresponding UI element
      */
-    const mouseDown = ( uiElement ) => { [ config.mouse.down, config.mouse.start] = [ true, getUiNode ( uiElement ) ] }
+    function mouseDown ( uiElement ) 
+    { 
+        [ config.mouse.down, config.mouse.start] = [ true, getUiNode ( uiElement ) ] 
+    }
 
     /**
      * mouseUp()                {Method}                    Defines the ending of a straight line 
      * @param                   {Object} uiElement          Object corresponding UI element
      */
-    function mouseUp ( uiElement )
+    function mouseUp   ( uiElement )
     {
         [ config.mouse.down, config.mouse.end ] = [ false, getUiNode ( uiElement ) ]
 
-        fretboard.lines.push ( { start: config.mouse.start, end: config.mouse.end } );
+        let object = { line: [ config.mouse.start, config.mouse.end ], stroke: { type: 1, color: '0, 0, 0', alpha: 1, width: 1 } }
 
-        // console.warn ( fretboard.lines );
+        linePushPop ( object );
+
+        console.warn ( fretboard.lines );
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -281,8 +281,8 @@
     config.settings.scale.type  = config.tone.scale.common.major;
     config.settings.scale.tonic = 'E';
 
-    config.about.Updated        = 'November, 15 2022';
-    config.about.Version        = '1.7.90';
+    config.about.Updated        = 'November, 17 2022';
+    config.about.Version        = '1.7.93';
 
     ////////////////////////////////////////////////////////////////////////////
 
@@ -351,8 +351,7 @@
      */
     String.prototype.countChar   = function ( value )
     {
-        let count = 0;
-        let i     = this.length - 1;
+        let count = 0, i = this.length - 1;
 
         while ( i >= 0 )
         {
@@ -374,6 +373,19 @@
         return ( this.includes ( delimiter ) ) 
                    ? this.split ( delimiter )
                    : undefined;
+    }
+
+    /**
+     * convertToElements()      {String:Method}             Returns an element node list for the DOM
+     * @return                  {Object}                    Element node list
+     */
+    String.prototype.convertToElements = function ( )
+    {
+        let temp = document.createElement ( 'div' );
+
+            temp.innerHTML = this;
+
+        return temp.childNodes;
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -411,6 +423,7 @@
 
     /**
      * setDom()                 {Method}                    Set DOM elements properties prior to drawing
+     * @var                     {Object} dom                DOM configuration settings 
      */
     function setDom ( dom = config.dom ) 
     {
@@ -443,33 +456,32 @@
         let controlWrapper = 
         {
             marginTop: ( canvasScale.height + canvas.height ),
-            height:      window.innerHeight - ( canvas.height - canvasScale.height )
+            height:      window.innerHeight - canvas.height - canvasScale.height - 15
         }
 
         ////////////////////////////////////////////////////////////////////////
         ////    HEIGHT x WIDTH      ////////////////////////////////////////////
         
-        document.getElementById ( "canvas" ).width           = canvas.width;
-        document.getElementById ( "canvas" ).height          = canvas.height;
+        document.getElementById ( "canvas" ).width          = canvas.width;
+        document.getElementById ( "canvas" ).height         = canvas.height;
         
-        document.getElementById ( "ui-overlay" ).width       = canvas.width;
-        document.getElementById ( "ui-overlay" ).height      = canvas.height
+        document.getElementById ( "ui-overlay" ).width      = canvas.width;
+        document.getElementById ( "ui-overlay" ).height     = canvas.height
         
-        document.getElementById ( "canvas-scale" ).width     = canvasScale.width;
-        document.getElementById ( "canvas-scale" ).height    = canvasScale.height;
+        document.getElementById ( "canvas-scale" ).width    = canvasScale.width;
+        document.getElementById ( "canvas-scale" ).height   = canvasScale.height;
 
-        document.getElementById ( "control-wrapper" ).height = controlWrapper.height;
+        document.getElementById ( "controls" ).style.height = `${controlWrapper.height}px`;
 
         ////////////////////////////////////////////////////////////////////////
         ////    MARGINS     ////////////////////////////////////////////////////
 
-        document.getElementById ( "canvas-scale" ).style.setProperty    ( 'margin-left', `${flyout.width}px` );
+        document.getElementById ( "canvas-scale" ).style.marginLeft   = `${flyout.width}px`;
         
-        document.getElementById ( "fretboard" ).style.setProperty       ( 'margin-top',  `${canvasScale.height}px` );
+        document.getElementById ( "fretboard" ).style.marginTop       = `${canvasScale.height}px`;
+        document.getElementById ( "fretboard" ).style.marginLeft      = `40px`;
 
-        document.getElementById ( "fretboard" ).style.setProperty       ( 'margin-left', `40px` );
-        
-        document.getElementById ( "control-wrapper" ).style.setProperty ( 'margin-top',  `${controlWrapper.marginTop}px` );
+        document.getElementById ( "control-wrapper" ).style.marginTop = `${controlWrapper.marginTop}px`;
         
         ////////////////////////////////////////////////////////////////////////
         ////    ANCILLARY   ////////////////////////////////////////////////////
@@ -480,6 +492,36 @@
 
         if ( config.debug ) requireJS ( "script/unitTests.js" );
     };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////    SETTERS ( CUSTOM )              ////////////////////////////////////////////////////////////
+
+    /**
+     * linePushPop()            {Array:Method}              Pushes or pops line objects specifically for the fretboard
+     * @param                   {Object} object             Line object to evaluate
+     */
+    function linePushPop ( object )
+    {
+        let index = undefined;
+
+        if ( object.line [ 0 ] == object.line [ 1 ] ) return;                   // Ensure lines don't connect to themselves
+
+        if ( fretboard.lines.length != 0 )                                      // Identify whether Array contains existing elements
+        {
+            for ( let line in fretboard.lines )                                 // Evaluate whether 'object' param is a new value or not
+
+                    if ( object.line.sort ( ).toString ( ) === fretboard.lines [ line ].line.sort ( ).toString ( ) )
+
+                        index = line;
+
+            ( index > -1 ) ? fretboard.lines.splice ( index, 1 ) : fretboard.lines.push ( object );
+        }
+        else
+
+            fretboard.lines.push ( object );
+
+        // TODO: Check whether new line intersects with an existing line
+    }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////    GETTERS ( GENERIC )             ////////////////////////////////////////////////////////////

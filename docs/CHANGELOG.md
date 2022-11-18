@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.93] - 2022-11-17
+### Added
+- String.prototype.convertToElements() to return an element node list for the DOM
+- linePushPop() to push or pop line objects specifically for the fretboard
+
+### Changes
+- refactored createComboBox() to include combo groups
+- refactored mouseUp() to incorporate linePushPop() function
+
 ## [1.7.90] - 2022-11-15
 ### Added
 - lines array within fretboard object to save drawn lines
@@ -186,7 +195,9 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.7.90]: 2022-11-15 [CURRENT REVISION]
+[1.7.93]: 2022-11-17 [CURRENT REVISION]
+
+[1.7.90]: 2022-11-15 [2c24089](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/2c24089) added save states and various UI elements
 
 [1.6.80]: 2022-11-12 [5c80247](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/5c80247) major refactoring of whole program: see changelog
 

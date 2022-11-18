@@ -2,15 +2,15 @@
 {
     'use strict';
 
-    let map     = new Object ( );
+    let map    = new Object ( );
 
-    let offset  = undefined;
+    let notes  = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 
-    let frets   = undefined;
+    let offset = undefined;
 
-    let canvas  = undefined;
+    let frets  = undefined;
 
-    const notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+    let canvas = undefined;    
 
     if ( canvas == undefined )
     {
