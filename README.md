@@ -36,26 +36,64 @@ Please [open an issue](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/issue
     │
     │
     ├── docs              (Notes regarding use...)
+    │   │
     │   └── CHANGELOG.md
     │
-    ├── proj              (Project files...)
-    │   └── Guitar Scale Mapper.sublime-project
-    │   └── Guitar Scale Mapper.sublime-workspace
+    ├── fonts             (Webfonts for application...)
+    │   │
+    │   ├── LICENSE.txt
+    │   │
+    │   ├── Roboto-Regular.ttf
+    │   │
+    │   ├── roboto-regular-webfont.woff
+    │   │
+    │   └── roboto-regular-webfont.woff2
+    │
+    ├── images            (Images for application...)
+    │   │
+    │   └── byrne-systems.logo.png
+    │
+    ├── libs              (Libraries for application...)
+    │   │
+    │   ├── bootstrap-4.0.0.min.js
+    │   │
+    │   ├── canvas2svg.js
+    │   │
+    │   ├── dom-tools.js
+    │   │
+    │   ├── flatten.js
+    │   │
+    │   ├── jquery-3.2.1.slim.min.js
+    │   │
+    │   ├── musicNote.lib.js
+    │   │
+    │   └── popper-1.12.9.min.js
     │
     ├── script            (Main JavaScript files...)
-    │   └── main.js
+    │   │
+    │   ├── main.js
+    │   │
+    │   ├── ui-controls.js
+    │   │
+    │   └── unitTests.js
     │
     ├── style             (Styles directory...)
+    │   │
     │   ├── main.scss
+    │   │
+    │   ├── main.css.map
+    │   │
     │   └── style.css
     │
     ├── index.html
+    │
     ├── LICENSE
+    │
     └── README.md
 
 
 ## Copyright
 
-![Byrne-Systems](http://byrne-systems.com/content/static/cube_sm.png)
+![Byrne-Systems](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/blob/main/images/byrne-systems.logo.png)
 
 == Byrne-Systems © 2022 - All rights reserved. ==
