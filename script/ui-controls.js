@@ -3,54 +3,57 @@
 
     function main ( )
     {
-        populateMenu   ( 'Scale',  object2Menu ( config.tone.scale ) );
+        populateMenu   ( 'Scale',  object2Menu ( app.tone.scale ) );
 
-        populateMenu   ( 'Tuning', object2Menu ( config.tone.tuning ) );
+        populateMenu   ( 'Tuning', object2Menu ( app.tone.tuning ) );
 
-        createComboBox ( 'root',   config.tone.notes,     'notes' );
-        
-        createComboBox ( 'type',   [ 'solid', 'dashed' ], 'lines' );
+        ////////////////////////////////////////////////////////////////////////
 
-        createComboBox ( 'alpha',  [ 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1  ], 'lines' );
+        createComboBox ( 'root',   app.tone.notes, 'notes' );
 
-        createComboBox ( 'Width',  [ 1, 2, 3, 4, 5, 6 ], 'lines' );
+        createComboBox ( 'type',   [ 'solid', 'dashed' ],  'lines' );
+
+        createComboBox ( 'color',  [ 'purple', 'red', 'orange', 'yellow', 'green', 'blue (light)', 'blue (dark)' ], 'lines' );
+
+        createComboBox ( 'alpha',  [ 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 ], 'lines' );
+
+        createComboBox ( 'width',  [ 1, 2, 3, 4, 5, 6, 7, 8 ], 'lines' );
     }
 
     main ();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-////    ARROW FUNCTIONS         ////////////////////////////////////////////////////////////////////
+////    SETTERS ( GENERIC )             ////////////////////////////////////////////////////////////
 
-    ////    SETTERS     ////////////////////////////////////////////////////////
-    
     /**
-     * setScrollWidth()         {Method}                    Sets the scroll width; in config.mouse.offset.x
+     * setScrollWidth()         {Method}                    Sets the scroll width; in app.mouse.offset.x
      */
-    const setScrollWidth         = ( )           => [ config.mouse.offset.x = Math.round ( window.scrollX ) ]
+    const setScrollWidth         = ( )           => [ app.mouse.offset.x = Math.round ( window.scrollX ) ]
 
-    ////    GETTERS     ////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////    GETTERS ( GENERIC )             ////////////////////////////////////////////////////////////
 
     /**
      * getPixelValueFromStyle() {Method}                    Returns the numeric pixel value from a specific style attribute
-     * @param                   {type} id                   DOM object identifier 
+     * @param                   {type} id                   DOM object identifier
      * @param                   {type} style                Style to inspect
      * @return                  {number}                    Numeric value of the inspected style
      */
     const getPixelValueFromStyle = ( id, style ) => Number.parseFloat ( document.getElementById ( id ).style[`${style}`].match ( /[^p]+/ )[0] );
-    
+
     /**
      * getCoordinatesFromCell() {Method}                    Get coordinates of a specific note via it's cell number
      * @param                   {type} cell                 Cell number of note
      * @return                  {Object}                    X & Y coordinates of note
      */
-    const getCoordinatesFromCell = ( cell )      => { for ( let note in fretboard.notes ) if ( fretboard.notes[note].cell == cell ) { return fretboard.notes[note].coordinates } }
+    const getCoordinatesFromCell = ( cell )      => { for ( let note in fingering.notes ) if ( fingering.notes[note].cell == cell ) { return fingering.notes[note].coordinates } }
 
     /**
      * getMouseCoordinates()    {Method}                    Returns the mouses current coordinates relative to its position
      * @param                   {Object} event              Event from 'mousemove' event listener
      * @return                  {Object}                    X & Y coordinates of mouse
      */
-    const getMouseCoordinates    = ( event )     => ( { x: ( event.clientX + config.mouse.offset.x ) - getPixelValueFromStyle ( 'fretboard', 'marginLeft' ), y: event.clientY - getPixelValueFromStyle ( 'fretboard', 'marginTop' ) } );
+    const getMouseCoordinates    = ( event )     => ( { x: ( event.clientX + app.mouse.offset.x ) - getPixelValueFromStyle ( 'fingering', 'marginLeft' ), y: event.clientY - getPixelValueFromStyle ( 'fingering', 'marginTop' ) } );
 
     /**
      * getUiNode()              {Method}                    Returns node value from the rendered document object corresponding to a note
@@ -79,7 +82,9 @@
     function populateMenu ( title, object )
     {
         title = ( title.includes ( ' ' ) )
+
                     ? title.replace ( /\s/g, '_' ).toLowerCase ( )
+
                     : title.toLowerCase ( );
 
         ////////////////////////////////////////////////////////////////////////
@@ -132,7 +137,9 @@
                         result = '';
 
                         if ( depth > 0 )
-                            for ( let i = 0; i < depth; i++ ) 
+
+                            for ( let i = 0; i < depth; i++ )
+
                                 result += '</ul></li>';
 
                         break;
@@ -145,8 +152,7 @@
 
                         let value        = `${header}-${key}`.replace ( /\-/g, '.' );
 
-                            header = header.toLowerCase ( );
-                            key    = key.toLowerCase    ( );
+                            [ header, key ] = [ header.toLowerCase ( ), key.toLowerCase ( ) ]
 
                             result = `<!-- ${header}-${key} --><li><a href="#"><input type="checkbox" id="${header}-${key}-checkbox" class="${header}-control" value='${value}'><label class="label" for="${header}-${key}-checkbox">${controlTitle.toTitleCase ( )}</label></a></li>`;
 
@@ -154,7 +160,9 @@
                 }
 
                 ( type == 'master' )
+
                     ? subMenu.unshift ( result )
+
                     : subMenu.push    ( result );
 
                 return result;
@@ -173,29 +181,37 @@
              * @param                   {number} prevLevel          Level of the previous item
              */
             function createMenuItem ( type, key, depth, level, prevLevel )
-            {   
+            {
                 ( prevLevel > level )
+
                     ? generateMenuItem ( 'menuEnd', undefined, undefined, prevLevel - level )
+
                     : String.empy;
 
                 ////////////////////////////////////////////////////////////////////////////////////////////
 
                 let regex = new RegExp ( `<!--\\s${title}-(?<result>[^\\s]+) -->` );
-                
+
                 let head  = ( regex.test ( lastMenu ) ) ? regex.exec ( lastMenu )[1] : undefined;
 
                 let HTML  = generateMenuItem ( type, key, head );
 
                 ////////////////////////////////////////////////////////////////////////////////////////////
 
-                ( prevLevel == level ) ? persistentLevel++ : [ persistentLevel, columns ] = [ 0, 2 ];
+                ( prevLevel == level )
+
+                    ? persistentLevel++
+
+                    : [ persistentLevel, columns ] = [ 0, 2 ];
 
                 if ( persistentLevel >= 12 )
                 {
                     let index = subMenu.indexOf ( lastMenu );
 
                     let menu  = ( columns < 3 )
+
                                     ? subMenu [ index ].replace ( '<ul>', `<ul style="columns: ${columns};">` )
+
                                     : subMenu [ index ].replace ( `<ul style="columns: ${columns - 1};">`, `<ul style="columns: ${columns};">` );
 
                         subMenu [ index ] = lastMenu = menu;
@@ -219,7 +235,7 @@
 
         for ( let key of keys )
         {
-            let values = 
+            let values =
             {
                 current:
                 {
@@ -236,7 +252,11 @@
                 }
             }
 
-                values.current.length = ( values.current.all != undefined ) ? values.current.all.length : 0;
+                values.current.length = ( values.current.all != undefined )
+
+                                            ? values.current.all.length
+
+                                            : 0;
 
             if ( count == 0 || values.current.depth == 0 )
             {
@@ -251,7 +271,9 @@
                             values.current.lone = values.current.all[i];
 
                         ( i != ( values.current.length - 1 ) )
+
                             ? createMenuItem ( 'menu',    values.current.lone, values.current.depth, ( i + 1 ), lastLevel )
+
                             : createMenuItem ( 'control', values.current.lone, values.current.depth, ( i + 1 ), lastLevel );
                     }
                 }
@@ -259,8 +281,8 @@
             else
             {
                 for ( let i = 0; i < values.current.length; i++ )
-                {   
-                        values.current.lone = values.current.all[i];
+                {
+                        values.current.lone = values.current.all [ i ];
 
                     if ( values.previous.depth == 0 && i == 0 )
                     {
@@ -293,10 +315,12 @@
         }
 
         ( lastLevel != 0 )
+
             ? generateMenuItem ( 'menuEnd', undefined, undefined, lastLevel )
+
             : generateMenuItem ( 'menuEnd', undefined, undefined, 1 )
-        
-            generateMenuItem ( 'master' );
+
+        generateMenuItem ( 'master' );
 
         ////    RESULT   ///////////////////////////////////////////////////////////
 
@@ -326,7 +350,7 @@
         ////    FUNCTIONS    ///////////////////////////////////////////////////
 
             /**
-             * checkRedudancy()         {Method}                    Identifies whether the current value is present within the previous value 
+             * checkRedudancy()         {Method}                    Identifies whether the current value is present within the previous value
              * @param                   {Object} value              Key value data
              * @param                   {number} value.current      Value of the current key
              * @param                   {number} value.previous     Value of the present key
@@ -337,7 +361,8 @@
 
                 let append = '';
 
-                for ( let i = 1; i <= value.previous.countChar ( '.' ); i++ ) 
+                for ( let i = 1; i <= value.previous.countChar ( '.' ); i++ )
+
                     append += '\\.\\w+';
 
                 regex = new RegExp ( `${regex}${append}` );
@@ -353,20 +378,25 @@
             function trimElements ( object, rootKey = undefined )
             {
                 for ( let currentKey in object )
-                {   
+                {
                     if ( currentKey.length > 2 )
                     {
-                        currentKey  = ( rootKey != undefined ) 
-                                          ? `${rootKey}.${currentKey}` : currentKey;   
+                        currentKey  = ( rootKey != undefined )
+
+                                          ? `${rootKey}.${currentKey}`
+
+                                          : currentKey;
 
                         if ( previousKey != undefined && ( currentKey.countChar ( '.' ) > previousKey.countChar ( '.' ) ) )
-                            checkRedudancy ( { current: currentKey, previous: previousKey } );    
+
+                            checkRedudancy ( { current: currentKey, previous: previousKey } );
 
                         temp.push ( currentKey );
 
                         previousKey = currentKey;
 
-                        if ( typeof object[`${currentKey}`] == 'object' ) 
+                        if ( typeof object[`${currentKey}`] == 'object' )
+
                             trimElements ( object[`${currentKey}`], currentKey );
                     }
                 }
@@ -377,9 +407,10 @@
 
         trimElements ( object );
 
-        let result = {};
+        let result = { };
 
         for ( let key of temp )
+
             if ( key.length > 2 ) result[`${key}`] = 0;
 
         return result;
@@ -406,10 +437,11 @@
              * @return                  {string}                Combo box values
              */
             function getOptions ( values )
-            {    
+            {
                 let result = '';
 
                 for ( let value in values )
+
                     result += `<a id="${value}" class="dropdown-item" onclick="comboBoxClick(this)">${values[value]}</a>\n`;
 
                 return result;
@@ -421,7 +453,7 @@
              * @param                   {Array}  values         Values to populate the combo box with
              * @return                  {string}                Combo box containing passed values
              */
-            const getComboBox = ( title, values ) => `<div class="btn-group dropup"><button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${title.toTitleCase ( )}</button><div class="dropdown-menu">${getOptions ( values )}</div></div><!-- .btn-group dropup -->`;
+            const getComboBox = ( title, values ) => `<div class="btn-group dropup"><button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${title.toTitleCase ( )}</button><div id="${title.toLowerCase ( )}" class="dropdown-menu">${getOptions ( values )}</div></div><!-- .btn-group dropup -->`;
 
             /**
              * getComboGroup()          {Method}                Generates a combo group around the passed UI element
@@ -441,7 +473,7 @@
         ////    FUNCTIONS    ///////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
 
-        let comboBox    = getComboBox ( title, values );    // Create: combo box
+        let comboBox = getComboBox ( title, values );       // Create: combo box
 
         if ( group != undefined )
         {
@@ -479,7 +511,9 @@
      */
     function comboBoxClick ( uiElement )
     {
-        console.log ( config.tone.notes [ `${uiElement.id}` ] );
+        console.log ( uiElement.parentNode.id );
+
+        console.dir ( uiElement.id );
     }
 
     /**
@@ -492,33 +526,34 @@
         {
             case 'about':
 
-                if ( !config.windows.about )
+                if ( !app.windows.about )
                 {
                     document.getElementById ( 'content' ).innerHTML +=
-                        `<div id="program-name"><b>Program: </b>${config.about.Library}</div>`   +
-                        `<div id="version-number"><b>Version: </b>${config.about.Version}</div>` +
-                        `<div id="updated-last"><b>Updated: </b>${config.about.Updated}</div>`   +
-                        `<div id="about-copyright">${config.about.Copyright}, all rights reserved</div>`;
+                        `<div id="program-name"><b>Program: </b>${app.about.Library}</div>`   +
+                        `<div id="version-number"><b>Version: </b>${app.about.Version}</div>` +
+                        `<div id="updated-last"><b>Updated: </b>${app.about.Updated}</div>`   +
+                        `<div id="about-copyright">${app.about.Copyright}, all rights reserved</div>`;
 
-                    config.windows.about = true;
+                    app.windows.about = true;
                 }
 
                 break;
 
             case 'ui-overlay':
 
-                let temp           = fretboard.notes;
+                let temp           = fingering.notes;
 
                 let mouseFunctions = `onmouseover='mouseOver ( this )' onmouseout='mouseOut ( this )' onmousedown='mouseDown ( this )' onmouseup='mouseUp ( this )'`;
 
-                let cssStyles      = `style="display: inline-block; float: left; text-align: center; line-height: ${fretboard.partition.height * 0.95}px; width: ${fretboard.partition.width}px; height: ${fretboard.partition.height}px; border-radius: ${fretboard.partition.height - 2}px; transition: box-shadow 0.75s; color: white;"`;
-                    
+                let cssStyles      = `style="display: inline-block; float: left; text-align: center; line-height: ${fingering.partition.height * 0.95}px; width: ${fingering.partition.width}px; height: ${fingering.partition.height}px; border-radius: ${fingering.partition.height - 2}px; transition: box-shadow 0.75s; color: white;"`;
+
                     temp.sort ( ( a, b ) =>
                     {
                         return ( a.string < b.string ) ? 1 : ( a.string > b.string ) ? -1 : 0;
                     });
 
-                for ( let note of temp ) 
+                for ( let note of temp )
+
                     document.getElementById ( 'ui-overlay' ).innerHTML += `<div ${cssStyles} ${mouseFunctions} id="ui-node-${note.cell}"></div>`;
 
                 break;
@@ -526,7 +561,7 @@
             default:
 
                 console.log ( `${windowId} is not supported by the insertHtmlContent ( ) function!` );
-                
+
                 break;
         }
     }
@@ -542,7 +577,7 @@
 
         ////////////////////////////////////////////////////////////////////////
         ////    FUNCTIONS   ////////////////////////////////////////////////////
-        
+
             /**
              * setElementsPosition()    {Method}                Sets the elements position using the align param
              */
@@ -553,7 +588,7 @@
                     width:  undefined,
                     height: undefined
                 }
-                
+
                 switch ( align )
                 {
                     case 'left':                               adjust.width = 0;     break;
@@ -572,9 +607,9 @@
                     case 'bottom':                             adjust.height = 1;    break;
                 }
 
-                element.style.marginLeft = `${( config.dom.window.width  - Number.parseInt ( element.style.width  ) ) * adjust.width}px`;
+                element.style.marginLeft = `${( app.dom.window.width  - Number.parseInt ( element.style.width  ) ) * adjust.width}px`;
 
-                element.style.marginTop  = `${( config.dom.window.height - Number.parseInt ( element.style.height ) ) * adjust.height}px`;
+                element.style.marginTop  = `${( app.dom.window.height - Number.parseInt ( element.style.height ) ) * adjust.height}px`;
 
                 element.style.display    = 'block';
             }
@@ -582,8 +617,10 @@
         ////    FUNCTIONS   ////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
 
-        ( element.style.display === 'none' ) 
-            ? setElementsPosition ( ) 
+        ( element.style.display === 'none' )
+
+            ? setElementsPosition ( )
+
             : element.style.display = 'none';
 
         insertHtmlContent ( windowId );
@@ -618,24 +655,46 @@
      * mouseDown()              {Method}                    Defines the beginner of a straight line
      * @param                   {Object} uiElement          Object corresponding UI element
      */
-    function mouseDown ( uiElement ) 
-    { 
-        [ config.mouse.down, config.mouse.start] = [ true, getUiNode ( uiElement ) ] 
+    function mouseDown ( uiElement )
+    {
+        [ app.mouse.down, app.mouse.start ] = [ true, getUiNode ( uiElement ) ]
     }
 
     /**
-     * mouseUp()                {Method}                    Defines the ending of a straight line 
+     * mouseUp()                {Method}                    Defines the ending of a straight line
      * @param                   {Object} uiElement          Object corresponding UI element
      */
     function mouseUp   ( uiElement )
     {
-        [ config.mouse.down, config.mouse.end ] = [ false, getUiNode ( uiElement ) ]
+        [ app.mouse.down, app.mouse.end ] = [ false, getUiNode ( uiElement ) ]
 
-        let object = { line: [ config.mouse.start, config.mouse.end ], stroke: { type: 1, color: '0, 0, 0', alpha: 1, width: 1 } }
+        if ( app.mouse.start == app.mouse.end )
+        {
+            // Toggle Note
+            let note = musicNote.getNoteFromCell ( app.mouse.end );
 
-        linePushPop ( object );
+            if ( !note.display )
+            {
+                note.toggleDisplay ( );
 
-        console.warn ( fretboard.lines );
+                displayNoteMarkers ( );
+
+                canvasSave ( 1 );                                   // TODO: SEND TO musicNote.lib.js
+
+                console.log ( note );
+            }
+        }
+        else
+        {
+            fingering.lines.pushPop ( musicNote.getLine ( ) );
+        }
+
+        // TODO: FIGURE THIS SHIT OUT WITH THE 'LINE' OBJECT
+        // let object = { line: [ app.mouse.start, app.mouse.end ], stroke: musicNote.getLineStroke ( ) }
+
+        showSavedState ( 'canvas' );
+
+        drawFretboardShapes ( );
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -651,27 +710,29 @@
         document.getElementById ( 'about' ).addEventListener ( "click", ( ) => showWindow ( 'about' ) );
 
         insertHtmlContent ( 'ui-overlay' );
-    }, 
+    },
     500 );
 
     /**
      * EventListener()          {Event}                     Window scroll event listener
-     */    
+     */
     window.addEventListener ( "scroll", setScrollWidth );
 
     /**
      * EventListener()          {Event}                     Mouse move event listener
      */
-    window.addEventListener ( "mousemove", function ( event ) 
-    {   
-        showSavedState ( 1 );
+    window.addEventListener ( "mousemove", function ( event )
+    {
+        showSavedState ( 'canvas' );
 
-        if ( config.mouse.down )
+        drawFretboardShapes ( );
+
+        if ( app.mouse.down )
         {
-            let start = getCoordinatesFromCell ( config.mouse.start );
+            let start = getCoordinatesFromCell ( app.mouse.start );
 
             let end   = getMouseCoordinates    ( event );
 
-            drawLine ( start.x, end.x, start.y, end.y, { type:  1, width: 5, color: config.colors.name.white, alpha: 0.8 } );
+            drawLine ( start.x, end.x, start.y, end.y, { type:  1, width: 5, color: app.colors.name.white, alpha: 0.8 } );
         }
     });

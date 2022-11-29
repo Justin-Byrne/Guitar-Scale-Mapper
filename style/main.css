@@ -84,7 +84,7 @@ body {
   #scale #canvas-scale {
     margin-right: 60px; }
 
-#fretboard {
+#fingering {
   width: 175%;
   aspect-ratio: 5 / 1;
   position: absolute;
@@ -128,10 +128,14 @@ body {
         text-transform: uppercase; }
       #control-wrapper #controls .control-group .master-btn-group {
         position: relative;
-        display: block;
+        display: grid;
+        grid-template-rows: 50px 50px;
+        /* 2 rows of 50px */
+        grid-auto-flow: column;
+        /* a column flow */
         height: 100px;
-        padding-left: 32px;
         padding-right: 10px;
+        padding-left: 30px;
         top: -30px; }
 
 #properties-window {

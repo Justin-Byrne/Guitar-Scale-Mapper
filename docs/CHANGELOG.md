@@ -1,7 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.7.93] - 2022-11-17
+## [0.7.97] - 2022-11-29
+### Added
+- user defined types for note and graphic generation
+
+### Changes
+- renamed 'fretboard' to 'fingering'
+- migrated global constants 'settings,' 'dataTypes,' 'tone,' 'fingering,' and 'post' to musicNote.lib.js
+- migrated various note related function from main.js to musicNote.lib.js
+
+## [0.7.93] - 2022-11-17
 ### Added
 - String.prototype.convertToElements() to return an element node list for the DOM
 - linePushPop() to push or pop line objects specifically for the fretboard
@@ -10,7 +19,7 @@ All notable changes to this project will be documented in this file.
 - refactored createComboBox() to include combo groups
 - refactored mouseUp() to incorporate linePushPop() function
 
-## [1.7.90] - 2022-11-15
+## [0.7.90] - 2022-11-15
 ### Added
 - lines array within fretboard object to save drawn lines
 - canvasSave() to save the canvas to the saveState variable
@@ -39,7 +48,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - removed ui-underlay
 
-## [1.6.80] - 2022-11-12
+## [0.6.80] - 2022-11-12
 ### Added
 - added Event Listener for when the DOM content is loaded
 
@@ -76,18 +85,18 @@ All notable changes to this project will be documented in this file.
 - removed parseFull2Clean()
 - removed parseFull2Strings()
 
-## [1.5.60] - 2022-11-04
+## [0.5.60] - 2022-11-04
 ### Added
 - requireJS() to load and execute JavaScript file
 
 ### Changes
 - refactored populateMenu() to optimize core processes
 
-## [1.5.58] - 2022-11-03
+## [0.5.58] - 2022-11-03
 ### Changes
-- refactored populateMenu() to include 'flyout menu' columns support 
+- refactored populateMenu() to include 'flyout menu' columns support
 
-## [1.5.57] - 2022-11-01
+## [0.5.57] - 2022-11-01
 ### Added
 - Object.prototype.getDepth() to return the maximum depth of an object
 - String.prototype.toTitleCase() to return a title case string
@@ -112,7 +121,7 @@ All notable changes to this project will be documented in this file.
 - removed drawFingering() function
 - removed drawModeOutlines() function
 
-## [1.4.43] - 2022-10-02
+## [0.4.43] - 2022-10-02
 ### Changed
 - expanded fretboard to 24 frets
 - expanded notes array under the fretboard array to organize various note array patterns
@@ -125,10 +134,10 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - removed getNextNote(), getAllNotes(), getPriorNote(), and getLastNote()
 
-## [1.3.36] - 2022-09-26
+## [0.3.36] - 2022-09-26
 ### Added
 - main() function, to hold main procedures
-- generateNextNote() to generate the next note 
+- generateNextNote() to generate the next note
 - getNextNote() to return the next active note
 - getPriorNote() to return the prior active note
 - getAllNotes() to return all active notes, based on note passed via param
@@ -145,7 +154,7 @@ All notable changes to this project will be documented in this file.
 - removed Array.prototype.containsArray() function
 - removed Array.prototype.pushPop() function
 
-## [1.3.23] - 2022-09-17
+## [0.3.23] - 2022-09-17
 ### Added
 - settings constant to contain unique scale settings
 - getNote() to get a single (open) note, with regards to the instruments current tuning
@@ -162,7 +171,7 @@ All notable changes to this project will be documented in this file.
 - renamed generateOpenNotes() to mapOpenNotes()
 - renamed generateFretboardNotes() to mapFretboardNotes()
 
-## [1.1.14] - 2022-09-03
+## [0.1.14] - 2022-09-03
 ### Added
 - settings object within 'config' object, for HTML5 canvas API drawing properties
 - fretboard object to retain basic fretboard data; i.e., size(s), strings, frets, etc...
@@ -171,7 +180,7 @@ All notable changes to this project will be documented in this file.
 - generateOpenNotes() to generate open notes for fretboard
 - generateFretboardNotes() to generate fret notes for fretboard
 - setScale() to set scale notes, to be used through desired scale
-- getNextNote() to return the next note 
+- getNextNote() to return the next note
 - displayFretboardNotes() to display notes on the fretboard
 - drawRectangle() to draw a simple rectangle
 - displayText() to display text
@@ -184,7 +193,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - 'Guitar Scale Mapper.sublime-project' and 'Guitar Scale Mapper.sublime-workspace'
 
-## [1.0.0] - 2022-01-05
+## [0.0.0] - 2022-01-05
 ### Added
 - Directory structure
 - CHANGELOG.md
@@ -195,27 +204,29 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[1.7.93]: 2022-11-17 [CURRENT REVISION]
+[0.7.97]: 2022-11-29 [CURRENT REVISION]
 
-[1.7.90]: 2022-11-15 [2c24089](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/2c24089) added save states and various UI elements
+[0.7.93]: 2022-11-17 [e90e136](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/e90e136) added additional ui controls
 
-[1.6.80]: 2022-11-12 [5c80247](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/5c80247) major refactoring of whole program: see changelog
+[0.7.90]: 2022-11-15 [2c24089](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/2c24089) added save states and various UI elements
 
-[1.5.60]: 2022-11-04 [e5e8582](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/e5e8582) added requireJS() function, and refactored populateMenu()
+[0.6.80]: 2022-11-12 [5c80247](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/5c80247) major refactoring of whole program: see changelog
 
-[1.5.58]: 2022-11-03 [aaf9e22](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/aaf9e22) refactored populateMenu() to include 'flyout menu' columns support
+[0.5.60]: 2022-11-04 [e5e8582](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/e5e8582) added requireJS() function, and refactored populateMenu()
 
-[1.5.57]: 2022-11-01 [d9caf51](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/d9caf51) implemented dynamic flyout menu functionality; general refactoring
+[0.5.58]: 2022-11-03 [aaf9e22](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/aaf9e22) refactored populateMenu() to include 'flyout menu' columns support
 
-[1.4.43]: 2022-10-02 [6d23501](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/6d23501) optimized core algorithms to locate individual modes
+[0.5.57]: 2022-11-01 [d9caf51](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/d9caf51) implemented dynamic flyout menu functionality; general refactoring
 
-[1.3.36]: 2022-09-26 [4933e69](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/4933e69) general refactoring
+[0.4.43]: 2022-10-02 [6d23501](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/6d23501) optimized core algorithms to locate individual modes
 
-[1.3.23]: 2022-09-17 [3ddbfa8](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/3ddbfa8) incorporated mode mapping and drawing; general cleanup of settings
+[0.3.36]: 2022-09-26 [4933e69](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/4933e69) general refactoring
 
-[1.1.14]: 2022-09-03 [95cb934](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/95cb934) incorporated various basic HTML5 canvas calls to render fretboard and notes; general cleanup
+[0.3.23]: 2022-09-17 [3ddbfa8](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/3ddbfa8) incorporated mode mapping and drawing; general cleanup of settings
 
-[1.0.0]: 2022-01-05 [0169cd4](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/0169cd4) initial upload
+[0.1.14]: 2022-09-03 [95cb934](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/95cb934) incorporated various basic HTML5 canvas calls to render fretboard and notes; general cleanup
+
+[0.0.0]: 2022-01-05 [0169cd4](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/0169cd4) initial upload
 
 ---
 

@@ -29,21 +29,21 @@ $menu-top-padding:          0.25rem;
         font-style:  normal;
 }
 
-body 
+body
 {
     font-family: 'Roboto';
     background-color: rgb(52, 53, 52);
     margin: 0;
 }
 
-.flyout-nav 
+.flyout-nav
 {
     // position: absolute;
     position: fixed;
     z-index: 5;
 
     // list of menu items at any level
-    ul 
+    ul
     {
         background: $menu-silver;
         margin: 0;
@@ -59,14 +59,14 @@ body
     }
 
     // a menu item
-    li 
+    li
     {
         position: relative;
         display: block;
         white-space: nowrap;
 
         // the menu items - text, shortcut info and hover effect (blue bg)
-        a 
+        a
         {
             text-decoration: none;
             color: $menu-text-color;
@@ -75,32 +75,32 @@ body
             width: 100%;
 
             .label,
-            .shortcut 
+            .shortcut
             {
                 display: table-cell;
                 padding: $menu-content-padding;
             }
 
-            .shortcut 
+            .shortcut
             {
                 text-align: right;
                 color: $menu-shortcut-color;
             }
 
-            label 
+            label
             {
                 cursor: pointer;
             }
 
             // for menu items that are toggled
-            input[type='checkbox'] 
+            input[type='checkbox']
             {
                 display: none;
             }
 
-            input[type='checkbox']:checked + .label 
+            input[type='checkbox']:checked + .label
             {
-                &::before 
+                &::before
                 {
                     content: '✔️';
                     position: absolute;
@@ -110,11 +110,11 @@ body
                 }
             }
 
-            &:hover 
+            &:hover
             {
                 background: $menu-focused;
                 .label,
-                .shortcut 
+                .shortcut
                 {
                     color: $menu-focused-text-color;
                 }
@@ -123,10 +123,10 @@ body
 
         // don't let disabled options respond to hover
         // or click and color them different
-        &.disabled 
+        &.disabled
         {
             .label,
-            .shortcut 
+            .shortcut
             {
                 color: $menu-text-color-disabled;
             }
@@ -134,7 +134,7 @@ body
         }
 
         // the separator item
-        &.separator 
+        &.separator
         {
             margin-bottom:  $menu-top-padding;
             border-bottom:  $menu-border-width solid $menu-separator;
@@ -143,9 +143,9 @@ body
 
         // show the next level drop-down on
         // the right at the same height
-        &:hover 
+        &:hover
         {
-            & > ul 
+            & > ul
             {
                 display: block;
                 top: 0;
@@ -155,7 +155,7 @@ body
     }
 
     // overrides for first-level behavior (horizontal bar)
-    & > ul 
+    & > ul
     {
         display: flex;
         flex-flow: row nowrap;
@@ -164,7 +164,7 @@ body
 
         // first-level drop-down should appear
         // below at the same left position
-        & > li:hover > ul 
+        & > li:hover > ul
         {
             top: 100%;
             left: 0;
@@ -172,7 +172,7 @@ body
     }
 }
 
-#scale 
+#scale
 {
     display: block;
     position: fixed;
@@ -184,7 +184,7 @@ body
     }
 }
 
-#fretboard
+#fingering
 {
     width: 175%;
     aspect-ratio: 5 / 1;
@@ -216,7 +216,7 @@ body
         margin-left:    60px;
         margin-right:   60px;
 
-        .control-group 
+        .control-group
         {
             position:    relative;
             display:     inline-block;
@@ -244,13 +244,16 @@ body
 
             .master-btn-group
             {
-                position:       relative;
-                display:        block;
+                position:           relative;
+                display:            grid;
+                grid-template-rows: 50px 50px;  /* 2 rows of 50px */
+                grid-auto-flow:     column;     /* a column flow */
+
                 height:         100px;
-                padding-left:   32px;
                 padding-right:  10px;
+                padding-left:   30px;
                 top:            -30px;
-            }   
+            }
         }
     }
 }
@@ -266,7 +269,7 @@ body
     border-bottom: 1px solid #c5c5c5;
     border-right:  1px solid #d5d5d5;
     border-left:   1px solid #e7e7e7;
-    
+
     border-radius: 5px;
 }
 
@@ -279,7 +282,7 @@ body
     border: 1px solid #000;
     border-radius: 5px;
 
-    img 
+    img
     {
         width: 425px;
         padding-left: 35px;
@@ -312,11 +315,14 @@ body
 
 .btn-group
 {
-    position: relative;
-    display: inline-block !important;
+    position:       relative;
+    display:        inline-block !important;
     vertical-align: middle;
-    padding-left:  10px;
-    padding-top: 10px;
+    padding-left:   10px;
+    padding-top:    10px;
+
+    // width:  85px;
+    // height: 46px;
 
     .btn
     {
@@ -326,7 +332,7 @@ body
             -webkit-appearance: button;
         }
 
-        &:not(:disabled):not(.disabled) 
+        &:not(:disabled):not(.disabled)
         {
             cursor: pointer;
         }
@@ -376,16 +382,16 @@ button, select
     text-transform: none;
 }
 
-button, input 
+button, input
 {
     overflow: visible;
 }
 
-.dropup 
+.dropup
 {
     .dropdown-toggle
     {
-        &::after 
+        &::after
         {
             box-sizing: border-box;
             display: inline-block;
@@ -423,7 +429,7 @@ button, input
     color: #212529;
     text-align: left;
     list-style: none;
-    background-color: #fff !important; 
+    background-color: #fff !important;
     background-clip: padding-box;
     border: 1px solid rgba(0,0,0,.15);
     border-radius: 0.25rem;
@@ -434,7 +440,7 @@ button, input
     display: block;
     z-index: 5;
 
-    .btn-secondary.dropdown-toggle 
+    .btn-secondary.dropdown-toggle
     {
         color: #fff;
         background-color: #545b62;
@@ -469,7 +475,7 @@ a
     text-decoration: none;
 }
 
-.dropdown-divider 
+.dropdown-divider
 {
     height: 0;
     margin: 0.5rem 0;
@@ -479,7 +485,7 @@ a
 
 // MISC
 
-#menu-test_menu 
+#menu-test_menu
 {
     display: none;
 }
