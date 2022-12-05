@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.100] - 2022-12-05
+### Added
+- canvas.lab.js to hold all canvas related functions and properties
+- guitar.lab.js to hold all guitar related functions and properties
+- Point, Note, Notes, Line, and Lines user defined data-types
+
+### Changes
+- renamed ui-controls.js to ui.lab.js
+
+### Removed
+- canvas2svg library
+
 ## [0.7.97] - 2022-11-29
 ### Added
 - user defined types for note and graphic generation
@@ -204,7 +216,9 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-[0.7.97]: 2022-11-29 [CURRENT REVISION]
+[0.8.100]: 2022-12-05 [CURRENT REVISION]
+
+[0.7.97]: 2022-11-29 [307bd0d](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/307bd0d) migrating notes based methods to musicNote.lib.js
 
 [0.7.93]: 2022-11-17 [e90e136](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/commit/e90e136) added additional ui controls
 
@@ -240,6 +254,6 @@ All notable changes to this project will be documented in this file.
 
 ## Copyright
 
-![Byrne-Systems](http://byrne-systems.com/content/static/cube_sm.png)
+![Byrne-Systems](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/blob/main/images/cube_sm.png)
 
 ==Byrne-Systems © 2022 - All rights reserved.==

@@ -35,11 +35,11 @@ Please [open an issue](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/issue
     . (root)
     │
     │
-    ├── docs              (Notes regarding use...)
+    ├── docs              ( Notes regarding use ... )
     │   │
     │   └── CHANGELOG.md
     │
-    ├── fonts             (Webfonts for application...)
+    ├── fonts             ( Webfonts for application ... )
     │   │
     │   ├── LICENSE.txt
     │   │
@@ -49,35 +49,37 @@ Please [open an issue](https://github.com/Justin-Byrne/Guitar-Scale-Mapper/issue
     │   │
     │   └── roboto-regular-webfont.woff2
     │
-    ├── images            (Images for application...)
+    ├── images            ( Images for application ... )
     │   │
     │   └── byrne-systems.logo.png
     │
-    ├── libs              (Libraries for application...)
+    ├── libs              ( Libraries for application ... )
     │   │
     │   ├── bootstrap-4.0.0.min.js
-    │   │
-    │   ├── canvas2svg.js
-    │   │
-    │   ├── dom-tools.js
     │   │
     │   ├── flatten.js
     │   │
     │   ├── jquery-3.2.1.slim.min.js
     │   │
-    │   ├── musicNote.lib.js
-    │   │
     │   └── popper-1.12.9.min.js
     │
-    ├── script            (Main JavaScript files...)
+    ├── script            ( Main JavaScript files ... )
     │   │
-    │   ├── main.js
+    │   ├── source
+    │   │   │
+    │   │   ├── canvas.lab.js
+    │   │   │
+    │   │   ├── guitar.lab.js
+    │   │   │
+    │   │   └── ui.lab.js
     │   │
-    │   ├── ui-controls.js
+    │   ├── tests
+    │   │   │
+    │   │   └── unit-tests.js
     │   │
-    │   └── unitTests.js
+    │   └── main.js
     │
-    ├── style             (Styles directory...)
+    ├── style             ( Styles directory ... )
     │   │
     │   ├── main.scss
     │   │
